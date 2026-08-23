@@ -1,0 +1,210 @@
+/* ==========================================================================
+   Career Assessment Wizard & Live AI Neural Synthesis Styles
+   ========================================================================== */
+
+.assessment-container {
+  max-width: 860px;
+  margin: 2rem auto;
+}
+
+.assessment-wizard-card {
+  background: var(--bg-glass-card);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: var(--radius-xl);
+  padding: 3rem;
+  box-shadow: var(--shadow-lg), 0 0 40px rgba(99, 102, 241, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Wizard Step Progress Bar */
+.wizard-progress {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2.5rem;
+  position: relative;
+}
+
+.wizard-progress::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-50%);
+  z-index: 0;
+}
+
+.wizard-progress-bar {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 3px;
+  background: var(--grad-electric);
+  transform: translateY(-50%);
+  transition: width 0.4s ease;
+  z-index: 1;
+}
+
+.step-node {
+  position: relative;
+  z-index: 2;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--bg-surface);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  transition: all var(--transition-normal);
+}
+
+.step-node.active {
+  background: var(--electric-blue);
+  border-color: #ffffff;
+  color: #ffffff;
+  box-shadow: 0 0 16px var(--electric-blue);
+  transform: scale(1.15);
+}
+
+.step-node.completed {
+  background: var(--emerald-growth);
+  border-color: var(--emerald-growth);
+  color: #ffffff;
+}
+
+/* Question Option Cards */
+.option-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+  margin: 1.75rem 0;
+}
+
+.option-card {
+  background: rgba(21, 34, 62, 0.6);
+  border: 1.5px solid rgba(99, 102, 241, 0.2);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.option-card:hover {
+  border-color: var(--electric-blue);
+  background: rgba(30, 48, 88, 0.7);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 0 15px rgba(59, 130, 246, 0.2);
+}
+
+.option-card.selected {
+  border-color: var(--cyan-ai);
+  background: rgba(6, 182, 212, 0.15);
+  box-shadow: 0 0 25px rgba(6, 182, 212, 0.3);
+}
+
+.option-icon {
+  font-size: 2rem;
+}
+
+.option-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.option-desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* Star Rating Selector for Skills */
+.skill-rating-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-md);
+  margin-bottom: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.star-rating {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.star-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.2);
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: color var(--transition-fast), transform var(--transition-fast);
+}
+
+.star-btn:hover, .star-btn.active {
+  color: #f59e0b;
+  transform: scale(1.15);
+}
+
+/* Live AI Neural Synthesis Screen */
+.synthesis-orb-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 0;
+  text-align: center;
+}
+
+.neural-orb {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #06b6d4 0%, #3b82f6 40%, #8b5cf6 80%, #070b14 100%);
+  box-shadow: 0 0 50px rgba(6, 182, 212, 0.6), inset 0 0 30px rgba(255, 255, 255, 0.5);
+  animation: orbPulse 3s infinite ease-in-out alternate;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.neural-orb::after {
+  content: '';
+  position: absolute;
+  inset: -15px;
+  border-radius: 50%;
+  border: 2px dashed rgba(6, 182, 212, 0.4);
+  animation: rotateOrb 12s linear infinite;
+}
+
+@keyframes orbPulse {
+  0% { transform: scale(0.95); filter: hue-rotate(0deg); }
+  100% { transform: scale(1.08); filter: hue-rotate(45deg); }
+}
+
+@keyframes rotateOrb {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.synthesis-status-line {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  color: var(--cyan-ai);
+  margin-top: 1rem;
+  min-height: 1.5rem;
+}

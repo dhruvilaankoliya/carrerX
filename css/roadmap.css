@@ -1,0 +1,158 @@
+/* ==========================================================================
+   Personalized Career Roadmap (Gamified Journey Timeline) Styles
+   ========================================================================== */
+
+.roadmap-header-card {
+  background: var(--bg-glass-card);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: var(--radius-xl);
+  padding: 2rem 2.5rem;
+  margin-bottom: 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.roadmap-timeline-container {
+  position: relative;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1rem 0 4rem;
+}
+
+/* Spine line down the center */
+.roadmap-timeline-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 36px;
+  width: 4px;
+  background: linear-gradient(180deg, #10b981 0%, #3b82f6 45%, rgba(99, 102, 241, 0.2) 90%);
+  border-radius: var(--radius-full);
+}
+
+.roadmap-stage-card {
+  position: relative;
+  margin-left: 80px;
+  margin-bottom: 2.5rem;
+  background: var(--bg-glass-card);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem 2rem;
+  transition: all var(--transition-normal);
+}
+
+.roadmap-stage-card:hover {
+  border-color: rgba(99, 102, 241, 0.5);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 25px rgba(59, 130, 246, 0.15);
+  transform: translateY(-2px);
+}
+
+.roadmap-stage-card.active-stage {
+  border-color: var(--cyan-ai);
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.5), 0 0 30px rgba(6, 182, 212, 0.25);
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.06) 0%, rgba(17, 26, 48, 0.9) 100%);
+}
+
+.roadmap-stage-card.completed-stage {
+  border-color: rgba(16, 185, 129, 0.35);
+}
+
+/* Stage Marker Node on the spine */
+.stage-marker-node {
+  position: absolute;
+  left: -80px;
+  top: 24px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--bg-surface);
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  z-index: 2;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  transform: translateX(12px);
+}
+
+.roadmap-stage-card.completed-stage .stage-marker-node {
+  background: var(--emerald-growth);
+  border-color: #ffffff;
+  color: #ffffff;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+}
+
+.roadmap-stage-card.active-stage .stage-marker-node {
+  background: var(--electric-blue);
+  border-color: var(--cyan-ai);
+  color: #ffffff;
+  box-shadow: 0 0 25px rgba(6, 182, 212, 0.6);
+  animation: pulseActiveMarker 2s infinite;
+}
+
+@keyframes pulseActiveMarker {
+  0%, 100% { transform: translateX(12px) scale(1); }
+  50% { transform: translateX(12px) scale(1.1); }
+}
+
+.stage-top-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.stage-title-wrap h3 {
+  font-size: 1.35rem;
+  color: #ffffff;
+  margin-bottom: 0.25rem;
+}
+
+.stage-deliverables-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin: 1.25rem 0;
+}
+
+.deliverable-box {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  transition: all var(--transition-fast);
+}
+
+.deliverable-box:hover {
+  background: rgba(99, 102, 241, 0.08);
+  border-color: rgba(99, 102, 241, 0.3);
+}
+
+.deliverable-type {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--cyan-ai);
+  margin-bottom: 0.35rem;
+}
+
+.deliverable-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.stage-footer-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 1rem;
+  margin-top: 1rem;
+}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="CareerX — AI-powered Student Skill & Career Advisor. Discover your strengths, close skill gaps, and build your personalized roadmap to the right engineering career." />
+  <meta name="theme-color" content="#070b14" />
+  <title>CareerX — AI-Powered Career Intelligence Platform</title>
+
+  <!-- Google Fonts: Premium Typography Stack -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <!-- CareerX Design System & Component Styles -->
+  <link rel="stylesheet" href="/css/design-system.css" />
+  <link rel="stylesheet" href="/css/components.css" />
+  <link rel="stylesheet" href="/css/constellation.css" />
+  <link rel="stylesheet" href="/css/dashboard.css" />
+  <link rel="stylesheet" href="/css/assessment.css" />
+  <link rel="stylesheet" href="/css/skill-gap.css" />
+  <link rel="stylesheet" href="/css/roadmap.css" />
+  <link rel="stylesheet" href="/css/explorer.css" />
+  <link rel="stylesheet" href="/css/resume.css" />
+  <link rel="stylesheet" href="/css/mentor.css" />
+</head>
+<body>
+  <!-- ─── Sticky Navigation Bar ─────────────────────────────── -->
+  <nav class="navbar" id="top-navbar" role="navigation" aria-label="Main navigation">
+    <!-- Rendered by app.js buildNavbar() -->
+  </nav>
+
+  <!-- ─── Main Application View Container ───────────────────── -->
+  <main id="app-view" role="main">
+    <!-- Rendered by router + view classes -->
+  </main>
+
+  <!-- ─── Floating AI Mentor Trigger Pill ───────────────────── -->
+  <button class="floating-ai-trigger" id="floating-ai-mentor" aria-label="Open AI Career Mentor">
+    <div class="ai-avatar-pulse">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5">
+        <path d="M12 2a8 8 0 0 0-8 8c0 3.37 2.1 6.25 5.09 7.41L9 22l3.5-1.5L16 22l-.09-4.59A8.001 8.001 0 0 0 12 2z"/>
+      </svg>
+    </div>
+    <div>
+      <span class="ai-trigger-text">AI Mentor</span>
+      <span class="ai-trigger-sub">Ask anything →</span>
+    </div>
+  </button>
+
+  <!-- ─── AI Mentor Slide-in Drawer Mount ───────────────────── -->
+  <div id="mentor-drawer-mount"></div>
+
+  <!-- ─── Toast Notification Container ─────────────────────── -->
+  <div class="toast-container" id="toast-container" role="status" aria-live="polite"></div>
+
+  <!-- ─── App Bootstrap ─────────────────────────────────────── -->
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>
