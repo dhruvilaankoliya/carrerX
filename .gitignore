@@ -10,6 +10,14 @@ dist/
 dist-ssr/
 .output/
 build/
+.next/
+out/
+
+# Database
+*.db
+*.db-journal
+*.sqlite
+dev.db
 
 # Environment & secrets
 .env

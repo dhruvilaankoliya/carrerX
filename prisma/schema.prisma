@@ -1,0 +1,166 @@
+// Prisma Schema for CareerX Platform
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  name         String
+  phone        String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  profile            Profile?
+  resumeData         ResumeData?
+  resumeQuestions    ResumeQuestion[]
+  assessmentResponses AssessmentResponse[]
+  learningProfile    LearningProfile?
+  readinessScores    ReadinessScore[]
+  careerMatches      CareerMatch[]
+  roadmaps           Roadmap[]
+  mentorMessages     MentorMessage[]
+}
+
+model Profile {
+  id                  String   @id @default(cuid())
+  userId              String   @unique
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  college             String
+  course              String
+  branch              String
+  currentYear         Int      @default(1)
+  gradYear            Int      @default(2027)
+  cgpa                Float?
+  preferredField      String?
+  programmingLanguages String  @default("[]") // JSON string of strings
+  technicalSkills     String   @default("[]") // JSON string of strings
+  linkedin            String?
+  github              String?
+  targetCareerId      String   @default("ml-engineer")
+  completenessStage   Int      @default(1) // 1: Profile Created, 2: Resume, 3: Resume Qs, 4: Tech/Apt, 5: Games, 6: Unlocked
+  completenessPercent Int      @default(20)
+  streakDays          Int      @default(1)
+  lastActiveAt        DateTime @default(now())
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model ResumeData {
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fileName         String?
+  rawText          String
+  parsedJson       String   // JSON string: { education, skills, projects, certifications, subjects }
+  initialInterests String   // JSON string: { "AI/ML": 85, "Software Dev": 40, ... }
+  uploadedAt       DateTime @default(now())
+}
+
+model ResumeQuestion {
+  id             String    @id @default(cuid())
+  userId         String
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questionText   String
+  category       String
+  relatedItem    String
+  options        String    // JSON string array of options
+  selectedAnswer String?
+  answeredAt     DateTime?
+}
+
+model AssessmentResponse {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  section     String   // TECH_INTEREST, APTITUDE, PROBLEM_SOLVING, MIND_GAMES
+  questionId  String
+  rawAnswer   String
+  isCorrect   Boolean?
+  score       Float    @default(0)
+  timeSpentMs Int      @default(0)
+  createdAt   DateTime @default(now())
+}
+
+model LearningProfile {
+  id                    String   @id @default(cuid())
+  userId                String   @unique
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  analyticalPreference  String
+  problemSolvingStyle   String
+  technicalInclination  String
+  decisionMakingPattern String
+  summary               String
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+model ReadinessScore {
+  id                  String   @id @default(cuid())
+  userId              String
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  targetCareerId      String
+  overallScore        Int
+  techScore           Int
+  projectsScore       Int
+  resumeScore         Int
+  problemSolvingScore Int
+  interestScore       Int
+  consistencyScore    Int
+  computedAt          DateTime @default(now())
+}
+
+model CareerMatch {
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  careerId       String
+  matchScore     Int
+  whyRecommended String
+  whatsMissing   String   // JSON string array of missing skill strings
+  computedAt     DateTime @default(now())
+}
+
+model Roadmap {
+  id              String         @id @default(cuid())
+  userId          String
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  targetCareerId  String
+  totalStages     Int            @default(5)
+  completedStages Int            @default(0)
+  progressPercent Int            @default(0)
+  phases          RoadmapPhase[]
+  generatedAt     DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+}
+
+model RoadmapPhase {
+  id           String   @id @default(cuid())
+  roadmapId    String
+  roadmap      Roadmap  @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
+  phaseNumber  Int
+  title        String
+  subtitle     String
+  duration     String
+  status       String   // COMPLETED, IN_PROGRESS, LOCKED
+  progress     Int      @default(0)
+  topics       String   // JSON string of topics array
+  deliverables String   // JSON string of deliverables array
+}
+
+model MentorMessage {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sender          String   // USER or AI
+  messageText     String
+  contextSnapshot String?  // Optional JSON snapshot of user's active gaps at time of message
+  createdAt       DateTime @default(now())
+}
