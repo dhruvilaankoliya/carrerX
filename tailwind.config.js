@@ -18,57 +18,41 @@ module.exports = {
     },
     extend: {
       colors: {
-        background: "#070b14",
-        foreground: "#f8fafc",
+        background: "#ffffff",
+        foreground: "#000000",
         card: {
-          DEFAULT: "rgba(17, 26, 48, 0.65)",
-          foreground: "#f8fafc",
+          DEFAULT: "#ffffff",
+          foreground: "#000000",
         },
         popover: {
-          DEFAULT: "rgba(15, 23, 42, 0.95)",
-          foreground: "#f8fafc",
+          DEFAULT: "#ffffff",
+          foreground: "#000000",
         },
         primary: {
-          DEFAULT: "#3b82f6",
+          DEFAULT: "#000000",
           foreground: "#ffffff",
-          glow: "rgba(59, 130, 246, 0.35)",
         },
         secondary: {
-          DEFAULT: "#1e293b",
-          foreground: "#94a3b8",
+          DEFAULT: "#f3f4f6",
+          foreground: "#374151",
         },
         muted: {
-          DEFAULT: "#1e293b",
-          foreground: "#64748b",
+          DEFAULT: "#f9fafb",
+          foreground: "#6b7280",
         },
         accent: {
-          DEFAULT: "#06b6d4",
+          DEFAULT: "#000000",
           foreground: "#ffffff",
-          glow: "rgba(6, 182, 212, 0.35)",
         },
-        violet: {
-          DEFAULT: "#8b5cf6",
-          glow: "rgba(139, 92, 246, 0.35)",
-        },
-        emerald: {
-          DEFAULT: "#10b981",
-          glow: "rgba(16, 185, 129, 0.3)",
-        },
-        amber: {
-          DEFAULT: "#f59e0b",
-          glow: "rgba(245, 158, 11, 0.3)",
-        },
-        coral: {
-          DEFAULT: "#f43f5e",
-          glow: "rgba(244, 63, 94, 0.3)",
-        },
-        border: "rgba(99, 102, 241, 0.18)",
+        border: "#e5e7eb",
       },
       borderRadius: {
-        lg: "16px",
-        md: "12px",
-        sm: "8px",
-        xl: "24px",
+        lg: "12px",
+        md: "8px",
+        sm: "6px",
+        xl: "16px",
+        "2xl": "20px",
+        full: "9999px",
       },
       fontFamily: {
         sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
@@ -76,9 +60,8 @@ module.exports = {
         mono: ['JetBrains Mono', 'monospace'],
       },
       boxShadow: {
-        glow: "0 0 25px rgba(59, 130, 246, 0.35)",
-        "glow-cyan": "0 0 25px rgba(6, 182, 212, 0.35)",
-        "glow-purple": "0 0 30px rgba(139, 92, 246, 0.35)",
+        minimal: "0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05)",
+        "minimal-card": "0 4px 20px -2px rgba(0, 0, 0, 0.06)",
       },
     },
   },

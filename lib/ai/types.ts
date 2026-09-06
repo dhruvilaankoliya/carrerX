@@ -40,6 +40,8 @@ export interface MentorChatRequest {
   userMessage: string;
   studentContext: {
     name: string;
+    college?: string;
+    branch?: string;
     currentYear: number;
     targetCareer: string;
     overallScore: number;
@@ -50,3 +52,11 @@ export interface MentorChatRequest {
   };
   history?: { sender: 'USER' | 'AI'; text: string }[];
 }
+
+export interface MentorChatResult {
+  response: string;
+  provider: 'gemini' | 'groq' | 'openrouter' | 'openai' | 'heuristic';
+  model?: string;
+  isEducational: boolean;
+}
+

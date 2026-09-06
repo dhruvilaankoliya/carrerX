@@ -1,16 +1,24 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Bot, X, Send, Sparkles } from 'lucide-react';
+import { Bot, X, Send, Sparkles, GraduationCap } from 'lucide-react';
+
+interface FloatingMessage {
+  sender: 'USER' | 'AI';
+  text: string;
+  model?: string;
+}
 
 export default function FloatingMentor() {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [messages, setMessages] = useState<Array<{ sender: 'USER' | 'AI'; text: string }>>([
+  const [hasLoadedHistory, setHasLoadedHistory] = useState(false);
+  const [activeProvider, setActiveProvider] = useState('CareerX Engine');
+  const [messages, setMessages] = useState<FloatingMessage[]>([
     {
       sender: 'AI',
-      text: "👋 Hi there! I'm your **CareerX AI Mentor**. Ask me anything about your skill gaps, standout capstone projects, resume bullet optimizations, or technical interview strategies!",
+      text: "👋 Hi! I'm your **CareerX AI Academic & Career Mentor**.\n\n🎓 *Educational Focus Active*: Ask me about computer science concepts, algorithms, capstone projects, ATS resume optimization, or technical mock interviews!",
     },
   ]);
 
@@ -19,8 +27,29 @@ export default function FloatingMentor() {
   useEffect(() => {
     if (isOpen) {
       chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      if (!hasLoadedHistory) {
+        loadHistory();
+      }
     }
-  }, [messages, isOpen]);
+  }, [messages, isOpen, hasLoadedHistory]);
+
+  const loadHistory = async () => {
+    try {
+      const res = await fetch('/api/mentor/chat');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.activeProvider) {
+          setActiveProvider(data.activeProvider);
+        }
+        if (data.messages && data.messages.length > 0) {
+          setMessages(data.messages);
+        }
+      }
+      setHasLoadedHistory(true);
+    } catch {
+      // Keep initial welcome message
+    }
+  };
 
   const handleSend = async (textToSend?: string) => {
     const query = textToSend || input;
@@ -32,25 +61,38 @@ export default function FloatingMentor() {
     setLoading(true);
 
     try {
+      const activeKey = typeof window !== 'undefined' ? localStorage.getItem('careerx_custom_llm_key') || '' : '';
       const res = await fetch('/api/mentor/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userMsg }),
+        body: JSON.stringify({ message: userMsg, apiKey: activeKey }),
       });
 
       if (res.ok) {
         const data = await res.json();
-        setMessages((prev) => [...prev, { sender: 'AI', text: data.response }]);
+        setMessages((prev) => [
+          ...prev,
+          { sender: 'AI', text: data.response, model: data.model },
+        ]);
+        if (data.model) {
+          setActiveProvider(data.model);
+        }
       } else {
         setMessages((prev) => [
           ...prev,
-          { sender: 'AI', text: '⚠️ Please sign in to access personalized AI mentor responses grounded in your profile.' },
+          {
+            sender: 'AI',
+            text: '⚠️ Please sign in to access personalized AI mentor responses grounded in your profile.',
+          },
         ]);
       }
     } catch {
       setMessages((prev) => [
         ...prev,
-        { sender: 'AI', text: '⚠️ Network connection issue. Please check your connection and try again.' },
+        {
+          sender: 'AI',
+          text: '⚠️ Network connection issue. Please check your connection and try again.',
+        },
       ]);
     } finally {
       setLoading(false);
@@ -58,9 +100,22 @@ export default function FloatingMentor() {
   };
 
   const quickChips = [
-    { label: '🛠️ Standout Capstone Project', query: 'What is the best capstone project I should build to stand out for my target role?' },
-    { label: '📄 Resume Keyword Gaps', query: 'What critical ATS keywords am I missing on my resume for my target role?' },
-    { label: '🎙️ Technical Interview Questions', query: 'Give me the top technical interview questions and STAR answer strategies for my target career.' },
+    {
+      label: '🛠️ Capstone Project',
+      query: 'What is the best capstone project I should build to stand out for my target career?',
+    },
+    {
+      label: '📄 Resume ATS Keywords',
+      query: 'What critical ATS keywords and quantifiable bullets am I missing on my resume?',
+    },
+    {
+      label: '🎙️ Mock Technical Interview',
+      query: 'Give me the top technical interview questions and STAR answer strategies for my target career.',
+    },
+    {
+      label: '🧠 Explain Dijkstra Algorithm',
+      query: 'Explain Dijkstra algorithm time and space complexity with routing examples.',
+    },
   ];
 
   return (
@@ -76,7 +131,7 @@ export default function FloatingMentor() {
         </div>
         <div className="text-left">
           <div className="text-xs font-bold text-white leading-tight">AI Mentor</div>
-          <div className="text-[10px] text-cyan-400 font-medium">Ask anything →</div>
+          <div className="text-[10px] text-cyan-400 font-medium">Educational Q&A →</div>
         </div>
       </button>
 
@@ -91,9 +146,9 @@ export default function FloatingMentor() {
               </div>
               <div>
                 <h3 className="font-heading font-bold text-sm text-white">CareerX AI Mentor</h3>
-                <div className="flex items-center gap-1.5 text-[10px] text-emerald-400 font-medium">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  Grounded in your profile & roadmap
+                <div className="flex items-center gap-1.5 text-[10px] text-cyan-400 font-medium">
+                  <GraduationCap className="w-3 h-3 text-emerald-400" />
+                  <span>Educational Mode • {activeProvider}</span>
                 </div>
               </div>
             </div>
@@ -115,8 +170,8 @@ export default function FloatingMentor() {
                 <div
                   className={`rounded-2xl p-3.5 text-xs leading-relaxed ${
                     m.sender === 'USER'
-                      ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-br-none'
-                      : 'bg-[#15223e]/80 border border-cyan-500/20 text-slate-200 rounded-bl-none prose prose-invert prose-xs'
+                      ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-br-none shadow-sm'
+                      : 'bg-[#15223e]/90 border border-cyan-500/20 text-slate-200 rounded-bl-none prose prose-invert prose-xs'
                   }`}
                   dangerouslySetInnerHTML={{
                     __html: m.text
@@ -133,7 +188,7 @@ export default function FloatingMentor() {
               <div className="flex gap-2 max-w-[80%]">
                 <div className="bg-[#15223e]/80 border border-cyan-500/20 rounded-2xl p-3 text-xs text-cyan-400 flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
-                  Analyzing your profile & synthesizing advice...
+                  Synthesizing advice...
                 </div>
               </div>
             )}
