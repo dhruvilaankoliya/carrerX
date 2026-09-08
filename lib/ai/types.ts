@@ -1,4 +1,11 @@
 export interface ParsedResumeOutput {
+  personalInfo?: {
+    name?: string;
+    email?: string;
+    phone?: string;
+    linkedin?: string;
+    github?: string;
+  };
   education: {
     institution: string;
     degree: string;
@@ -7,6 +14,7 @@ export interface ParsedResumeOutput {
     gpa?: string;
   };
   technicalSkills: string[];
+  categorizedSkills?: Record<string, string[]>;
   subjects: string[];
   projects: {
     name: string;
