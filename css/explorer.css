@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Career Explorer & Role Intelligence Directory Styles
+   Career Explorer & Role Intelligence Directory Styles (Vibrant)
    ========================================================================== */
 
 .explorer-toolbar {
@@ -53,6 +53,8 @@
 
 .career-card {
   background: var(--grad-dark-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--bg-glass-border);
   border-radius: var(--radius-lg);
   padding: 1.75rem;
@@ -62,6 +64,7 @@
   transition: all var(--transition-normal);
   position: relative;
   cursor: pointer;
+  box-shadow: var(--shadow-sm);
 }
 
 .career-card:hover {
@@ -142,7 +145,7 @@
 .stat-val {
   font-size: 0.95rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: #38bdf8;
   font-family: var(--font-mono);
 }
 

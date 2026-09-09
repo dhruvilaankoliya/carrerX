@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CareerX - Homepage View (Landing Page Experience)
+   CareerX - Homepage View (Clean & Minimal Experience)
    ========================================================================== */
 
 import { CareerConstellation } from '../components/constellation.js';
@@ -17,38 +17,37 @@ export class HomeView {
   render() {
     this.container.innerHTML = `
       <!-- 1. Hero Section -->
-      <section class="hero-section" style="padding: 3rem 0 5rem; position: relative;">
+      <section class="hero-section" style="padding: 2rem 0 3rem; position: relative;">
         <div class="container">
-          <div style="text-align: center; max-width: 880px; margin: 0 auto 2.5rem;">
-            <div class="section-tag" style="margin-bottom: 1.25rem;">
-              <span class="dot"></span> Next-Gen AI Career & Skill Intelligence
+          <div style="text-align: left; max-width: 780px; margin: 0 0 2rem;">
+            <div class="section-tag" style="margin-bottom: 0.75rem;">
+              Career & Skill Intelligence
             </div>
-            <h1 style="margin-bottom: 1.25rem; letter-spacing: -0.03em;">
-              Discover Your Potential.<br/>
-              <span class="text-gradient">Build the Career You're Meant For.</span>
+            <h1 style="margin-bottom: 0.75rem;">
+              Discover your strengths. Build your engineering career.
             </h1>
-            <p class="section-desc" style="font-size: 1.2rem; max-width: 720px; margin: 0 auto 2rem;">
-              CareerX analyzes your strengths, maps industry skill gaps, and guides you along a personalized, gamified roadmap toward high-impact engineering careers.
+            <p class="section-desc" style="margin-bottom: 1.5rem;">
+              CareerX analyzes technical proficiencies, identifies industry skill gaps, and generates structured learning roadmaps toward high-impact roles.
             </p>
-            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-              <button class="btn btn-primary btn-lg" id="hero-start-assessment-btn">
-                ⚡ Start Free AI Assessment →
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+              <button class="btn btn-primary" id="hero-start-assessment-btn">
+                Start Assessment
               </button>
-              <button class="btn btn-glass btn-lg" id="hero-open-dashboard-btn">
-                🚀 Open Student Command Center
+              <button class="btn btn-glass" id="hero-open-dashboard-btn">
+                Open Dashboard
               </button>
             </div>
           </div>
 
-          <!-- Signature Visual: The Career Constellation Canvas -->
+          <!-- The Career Constellation Canvas -->
           <div class="constellation-wrapper">
             <div class="constellation-hud">
               <div class="constellation-legend">
-                <div class="legend-item"><span class="legend-dot skill"></span> Current Skills</div>
+                <div class="legend-item"><span class="legend-dot skill"></span> Skills</div>
                 <div class="legend-item"><span class="legend-dot interest"></span> Passions</div>
                 <div class="legend-item"><span class="legend-dot course"></span> Courses</div>
                 <div class="legend-item"><span class="legend-dot project"></span> Projects</div>
-                <div class="legend-item"><span class="legend-dot career"></span> Target Careers</div>
+                <div class="legend-item"><span class="legend-dot career"></span> Careers</div>
               </div>
               <div class="constellation-controls">
                 <button class="hud-btn" id="constellation-reset-btn" title="Reset View">⟲</button>
@@ -60,130 +59,127 @@ export class HomeView {
             <canvas id="hero-constellation-canvas" class="constellation-canvas"></canvas>
 
             <div id="constellation-tooltip" class="node-tooltip-card" style="display: none;">
-              <div class="node-tooltip-type" id="tt-type" style="color: #06b6d4;">Skill Node</div>
+              <div class="node-tooltip-type" id="tt-type">Skill Node</div>
               <div class="node-tooltip-title" id="tt-title">PyTorch & Neural Nets</div>
               <div class="node-tooltip-desc" id="tt-desc">Core framework for deep learning architectures and transformer training.</div>
               <div class="node-tooltip-meta">
-                <span id="tt-match" style="color: #10b981; font-weight: 700;">88% Competency</span>
-                <span style="color: var(--text-tertiary);">Drag or click node</span>
+                <span id="tt-match" style="font-weight: 600; color: var(--text-primary);">88% Competency</span>
+                <span style="color: var(--text-tertiary);">Click node to view</span>
               </div>
             </div>
           </div>
 
-          <!-- Micro-Metrics Ticker -->
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-top: 3rem;">
-            <div class="glass-card" style="text-align: center;">
-              <div style="font-family: var(--font-heading); font-size: 2.2rem; font-weight: 800; color: #38bdf8;">42,000+</div>
-              <div style="font-size: 0.85rem; color: var(--text-secondary);">Skills & Competencies Modeled</div>
+          <!-- Key Metrics Ticker -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.5rem;">
+            <div class="glass-card">
+              <div style="font-family: var(--font-heading); font-size: 1.6rem; font-weight: 600; color: var(--text-primary);">42,000+</div>
+              <div style="font-size: 0.8rem; color: var(--text-secondary);">Skills Modeled</div>
             </div>
-            <div class="glass-card" style="text-align: center;">
-              <div style="font-family: var(--font-heading); font-size: 2.2rem; font-weight: 800; color: #34d399;">94.8%</div>
-              <div style="font-size: 0.85rem; color: var(--text-secondary);">Placement Readiness Match</div>
+            <div class="glass-card">
+              <div style="font-family: var(--font-heading); font-size: 1.6rem; font-weight: 600; color: var(--text-primary);">94.8%</div>
+              <div style="font-size: 0.8rem; color: var(--text-secondary);">Benchmark Alignment</div>
             </div>
-            <div class="glass-card" style="text-align: center;">
-              <div style="font-family: var(--font-heading); font-size: 2.2rem; font-weight: 800; color: #c084fc;">1,250+</div>
-              <div style="font-size: 0.85rem; color: var(--text-secondary);">Verified Industry Roadmaps</div>
+            <div class="glass-card">
+              <div style="font-family: var(--font-heading); font-size: 1.6rem; font-weight: 600; color: var(--text-primary);">1,250+</div>
+              <div style="font-size: 0.8rem; color: var(--text-secondary);">Industry Roadmaps</div>
             </div>
-            <div class="glass-card" style="text-align: center;">
-              <div style="font-family: var(--font-heading); font-size: 2.2rem; font-weight: 800; color: #fbbf24;">4.9 / 5 ★</div>
-              <div style="font-size: 0.85rem; color: var(--text-secondary);">Student Transformation Rating</div>
+            <div class="glass-card">
+              <div style="font-family: var(--font-heading); font-size: 1.6rem; font-weight: 600; color: var(--text-primary);">4.9 / 5.0</div>
+              <div style="font-size: 0.8rem; color: var(--text-secondary);">Student Satisfaction</div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- 2. Interactive 4-Step Journey ("How CareerX Works") -->
-      <section class="section-spacing" style="background: rgba(11, 18, 34, 0.5); border-top: 1px solid rgba(255, 255, 255, 0.05); border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+      <!-- 2. Interactive 4-Step Journey -->
+      <section class="section-spacing" style="background: var(--bg-surface); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
         <div class="container">
           <div class="section-header">
-            <div class="section-tag"><span class="dot"></span> How CareerX Works</div>
-            <h2 class="section-title">An Intelligent 4-Step Transformation Journey</h2>
-            <p class="section-desc">From uncertain student to job-ready engineering contender with verified proof of work.</p>
+            <div class="section-tag">Methodology</div>
+            <h2 class="section-title">A 4-Step Structured Progression</h2>
+            <p class="section-desc">Assess, analyze gaps, follow verified milestones, and audit deliverables.</p>
           </div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 2.5rem; align-items: center;">
-            <div style="display: flex; flex-direction: column; gap: 1rem;" id="journey-tabs">
-              <div class="glass-card journey-step-card active" data-step="1" style="cursor: pointer; border-left: 4px solid var(--cyan-ai);">
-                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.25rem;">
-                  <span style="font-family: var(--font-mono); color: var(--cyan-ai); font-weight: 700;">STEP 01</span>
-                  <h3 style="font-size: 1.15rem;">Deep AI Career Assessment</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 1.5rem; align-items: start;">
+            <div style="display: flex; flex-direction: column; gap: 0.75rem;" id="journey-tabs">
+              <div class="glass-card journey-step-card active" data-step="1" style="cursor: pointer;">
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+                  <span style="font-family: var(--font-mono); color: var(--accent); font-weight: 600; font-size: 0.8rem;">01</span>
+                  <h3 style="font-size: 0.95rem;">Career Assessment</h3>
                 </div>
-                <p style="font-size: 0.88rem;">Multidimensional evaluation of your technical skills, problem-solving style, and dream career environment.</p>
+                <p style="font-size: 0.82rem;">Evaluation of technical abilities, problem solving, and role preferences.</p>
               </div>
 
               <div class="glass-card journey-step-card" data-step="2" style="cursor: pointer;">
-                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.25rem;">
-                  <span style="font-family: var(--font-mono); color: var(--electric-blue); font-weight: 700;">STEP 02</span>
-                  <h3 style="font-size: 1.15rem;">Constellation & Skill Gap Mapping</h3>
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+                  <span style="font-family: var(--font-mono); color: var(--text-secondary); font-weight: 600; font-size: 0.8rem;">02</span>
+                  <h3 style="font-size: 0.95rem;">Skill Gap Mapping</h3>
                 </div>
-                <p style="font-size: 0.88rem;">Real-time radar comparison between your current proficiencies and top industry expectations.</p>
+                <p style="font-size: 0.82rem;">Radar comparison against industry hiring standards.</p>
               </div>
 
               <div class="glass-card journey-step-card" data-step="3" style="cursor: pointer;">
-                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.25rem;">
-                  <span style="font-family: var(--font-mono); color: var(--ultra-violet); font-weight: 700;">STEP 03</span>
-                  <h3 style="font-size: 1.15rem;">Dynamic Gamified Learning Roadmap</h3>
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+                  <span style="font-family: var(--font-mono); color: var(--text-secondary); font-weight: 600; font-size: 0.8rem;">03</span>
+                  <h3 style="font-size: 0.95rem;">Structured Roadmap</h3>
                 </div>
-                <p style="font-size: 0.88rem;">Stage-by-stage milestones, vetted industry projects, and high-yield credentials with clear "why" context.</p>
+                <p style="font-size: 0.82rem;">Sequential stages, project requirements, and core milestones.</p>
               </div>
 
               <div class="glass-card journey-step-card" data-step="4" style="cursor: pointer;">
-                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.25rem;">
-                  <span style="font-family: var(--font-mono); color: var(--emerald-growth); font-weight: 700;">STEP 04</span>
-                  <h3 style="font-size: 1.15rem;">ATS Resume Audit & Job-Ready Launch</h3>
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+                  <span style="font-family: var(--font-mono); color: var(--text-secondary); font-weight: 600; font-size: 0.8rem;">04</span>
+                  <h3 style="font-size: 0.95rem;">Resume & Readiness Audit</h3>
                 </div>
-                <p style="font-size: 0.88rem;">Line-by-line AI resume optimization, keyword gap remediation, and simulated technical mock interviews.</p>
+                <p style="font-size: 0.82rem;">Keyword optimization and ATS compatibility review.</p>
               </div>
             </div>
 
-            <!-- Dynamic Interactive Journey Preview Widget -->
-            <div class="glass-panel" id="journey-preview-pane" style="padding: 2.5rem; min-height: 380px; display: flex; flex-direction: column; justify-content: center;">
+            <!-- Dynamic Journey Preview Widget -->
+            <div class="glass-card" id="journey-preview-pane" style="padding: 1.5rem; min-height: 260px; display: flex; flex-direction: column; justify-content: center;">
               <!-- Injected by updateJourneyStep -->
             </div>
           </div>
         </div>
       </section>
 
-      <!-- 3. AI Career Intelligence Spotlight Preview -->
+      <!-- 3. AI Capabilities Section -->
       <section class="section-spacing">
         <div class="container">
           <div class="section-header">
-            <div class="section-tag"><span class="dot"></span> AI Skill Intelligence</div>
-            <h2 class="section-title">Unlike Any College Portal or Job Board</h2>
-            <p class="section-desc">CareerX doesn't just show job listings. It understands your exact gaps and engineers your readiness.</p>
+            <div class="section-tag">Core Features</div>
+            <h2 class="section-title">Engineered for Clear Direction</h2>
+            <p class="section-desc">Practical tooling designed to prepare students for engineering roles.</p>
           </div>
 
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
             <!-- Feature 1 -->
-            <div class="glass-card" style="border-top: 2px solid var(--cyan-ai);">
-              <div style="font-size: 2.5rem; margin-bottom: 1rem;">🎯</div>
-              <h3 style="margin-bottom: 0.5rem;">Precision Skill Gap Radar</h3>
-              <p style="margin-bottom: 1.25rem;">Instantly visualizes the delta between your current capabilities and hiring benchmarks at top tier companies.</p>
-              <div style="background: rgba(0,0,0,0.3); border-radius: var(--radius-sm); padding: 0.75rem; font-size: 0.8rem; font-family: var(--font-mono); color: #38bdf8;">
-                ✓ 8 Core Dimensions Analyzed<br/>
-                ✓ Actionable 3-Day Bridge Projects
+            <div class="glass-card">
+              <h3 style="margin-bottom: 0.35rem; font-size: 1rem;">Skill Gap Radar</h3>
+              <p style="margin-bottom: 1rem; font-size: 0.85rem;">Calculates the delta between current competencies and industry hiring benchmarks.</p>
+              <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.65rem; font-size: 0.75rem; font-family: var(--font-mono); color: var(--text-secondary);">
+                • 8 core competency dimensions<br/>
+                • Priority deficit categorization
               </div>
             </div>
 
             <!-- Feature 2 -->
-            <div class="glass-card" style="border-top: 2px solid var(--electric-blue);">
-              <div style="font-size: 2.5rem; margin-bottom: 1rem;">🗺️</div>
-              <h3 style="margin-bottom: 0.5rem;">Gamified Stage Roadmaps</h3>
-              <p style="margin-bottom: 1.25rem;">Stage-by-stage learning pathways with XP rewards, milestone unlocks, and verifiable portfolio deliverables.</p>
-              <div style="background: rgba(0,0,0,0.3); border-radius: var(--radius-sm); padding: 0.75rem; font-size: 0.8rem; font-family: var(--font-mono); color: #34d399;">
-                ✓ Stage 1: Mathematical Foundations<br/>
-                ✓ Stage 5: FAANG Mock Interview Ready
+            <div class="glass-card">
+              <h3 style="margin-bottom: 0.35rem; font-size: 1rem;">Milestone Roadmaps</h3>
+              <p style="margin-bottom: 1rem; font-size: 0.85rem;">Sequential learning pathways with concrete project deliverables.</p>
+              <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.65rem; font-size: 0.75rem; font-family: var(--font-mono); color: var(--text-secondary);">
+                • Phase 1: Core foundations<br/>
+                • Phase 5: Production capstone
               </div>
             </div>
 
             <!-- Feature 3 -->
-            <div class="glass-card" style="border-top: 2px solid var(--ultra-violet);">
-              <div style="font-size: 2.5rem; margin-bottom: 1rem;">🤖</div>
-              <h3 style="margin-bottom: 0.5rem;">Personal AI Career Mentor</h3>
-              <p style="margin-bottom: 1.25rem;">A floating 24/7 conversational mentor that knows your profile, recommends high-yield projects, and audits resumes.</p>
-              <div style="background: rgba(0,0,0,0.3); border-radius: var(--radius-sm); padding: 0.75rem; font-size: 0.8rem; font-family: var(--font-mono); color: #c084fc;">
-                ✓ Context-Aware Recommendations<br/>
-                ✓ Instant ATS Resume Re-writing
+            <div class="glass-card">
+              <h3 style="margin-bottom: 0.35rem; font-size: 1rem;">AI Advisor & Resume Scanner</h3>
+              <p style="margin-bottom: 1rem; font-size: 0.85rem;">Profile-aware recommendations and targeted ATS keyword analysis.</p>
+              <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.65rem; font-size: 0.75rem; font-family: var(--font-mono); color: var(--text-secondary);">
+                • Context-grounded feedback<br/>
+                • Actionable bullet rewriting
               </div>
             </div>
           </div>
@@ -191,15 +187,15 @@ export class HomeView {
       </section>
 
       <!-- 4. Trending Career Explorer Teaser -->
-      <section class="section-spacing" style="background: rgba(11, 18, 34, 0.4);">
+      <section class="section-spacing" style="background: var(--bg-surface); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
         <div class="container">
-          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem; flex-wrap: wrap; gap: 1rem;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
             <div>
-              <div class="section-tag"><span class="dot"></span> Explore High-Growth Roles</div>
-              <h2>High-Impact Engineering Paths</h2>
-              <p>Compare real salary ranges, demand trajectories, and required tool stacks.</p>
+              <div class="section-tag">Role Directory</div>
+              <h2>High-Impact Engineering Careers</h2>
+              <p>Explore target compensation, demand levels, and prerequisite skills.</p>
             </div>
-            <button class="btn btn-glass" id="home-view-all-careers-btn">View All 16+ Careers →</button>
+            <button class="btn btn-glass" id="home-view-all-careers-btn">View All Roles →</button>
           </div>
 
           <div class="careers-grid">
@@ -208,7 +204,7 @@ export class HomeView {
                 <div>
                   <div class="career-card-top">
                     <div class="career-icon-box">${c.icon}</div>
-                    <span class="career-match-pill">${c.matchScore}% Fit</span>
+                    <span class="career-match-pill">${c.matchScore}% Match</span>
                   </div>
                   <h3 class="career-title">${c.title}</h3>
                   <p class="career-desc">${c.description}</p>
@@ -216,16 +212,16 @@ export class HomeView {
                 <div>
                   <div class="career-stats-row">
                     <div class="career-stat-item">
-                      <span class="stat-label">Avg. Salary</span>
-                      <span class="stat-val" style="color: #38bdf8;">${c.salaryRange}</span>
+                      <span class="stat-label">Salary Range</span>
+                      <span class="stat-val">${c.salaryRange}</span>
                     </div>
                     <div class="career-stat-item" style="text-align: right;">
-                      <span class="stat-label">Growth</span>
-                      <span class="stat-val" style="color: #34d399;">${c.growthRate}</span>
+                      <span class="stat-label">Market Demand</span>
+                      <span class="stat-val">${c.growthRate}</span>
                     </div>
                   </div>
                   <button class="btn btn-sm btn-glass explore-role-btn" data-career="${c.id}" style="width: 100%;">
-                    Inspect Skill Requirements →
+                    View Requirements →
                   </button>
                 </div>
               </div>
@@ -234,78 +230,23 @@ export class HomeView {
         </div>
       </section>
 
-      <!-- 5. Student Success Testimonials -->
-      <section class="section-spacing">
+      <!-- 5. CTA Section -->
+      <section style="padding: 3rem 0;">
         <div class="container">
-          <div class="section-header">
-            <div class="section-tag"><span class="dot"></span> Verified Student Stories</div>
-            <h2 class="section-title">Built for Students Who Want to Stand Out</h2>
-            <p class="section-desc">Hear how students transformed their trajectory from tier-3 colleges to global tech leaders.</p>
-          </div>
-
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.75rem;">
-            <div class="glass-card">
-              <div style="display: flex; gap: 0.35rem; color: #f59e0b; margin-bottom: 1rem;">★★★★★</div>
-              <p style="font-style: italic; margin-bottom: 1.5rem; color: #cbd5e1;">
-                "I was lost between doing generic web dev and ML tutorials. CareerX showed me my exact gap in Docker and FastAPI. After building the suggested RAG capstone, I landed an AI engineer internship at a top lab!"
-              </p>
-              <div style="display: flex; align-items: center; gap: 0.75rem;">
-                <div style="width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #06b6d4); display: flex; align-items: center; justify-content: center; font-weight: 700;">SN</div>
-                <div>
-                  <div style="font-weight: 700; font-size: 0.95rem; color: #ffffff;">Siddharth Nair</div>
-                  <div style="font-size: 0.75rem; color: var(--text-tertiary);">Junior ML Engineer @ Scale AI</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="glass-card">
-              <div style="display: flex; gap: 0.35rem; color: #f59e0b; margin-bottom: 1rem;">★★★★★</div>
-              <p style="font-style: italic; margin-bottom: 1.5rem; color: #cbd5e1;">
-                "The Career Constellation made everything click. It wasn't just a list of courses — it showed me how my math interest connected to PyTorch and distributed inference. My readiness score jumped from 62 to 89."
-              </p>
-              <div style="display: flex; align-items: center; gap: 0.75rem;">
-                <div style="width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, #8b5cf6, #ec4899); display: flex; align-items: center; justify-content: center; font-weight: 700;">EL</div>
-                <div>
-                  <div style="font-weight: 700; font-size: 0.95rem; color: #ffffff;">Elena Lin</div>
-                  <div style="font-size: 0.75rem; color: var(--text-tertiary);">Platform Engineer @ Datadog</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="glass-card">
-              <div style="display: flex; gap: 0.35rem; color: #f59e0b; margin-bottom: 1rem;">★★★★★</div>
-              <p style="font-style: italic; margin-bottom: 1.5rem; color: #cbd5e1;">
-                "The AI bullet rewriter alone is worth gold. It turned my vague bullet points into quantified impact metrics that passed recruiter ATS screenings in 48 hours."
-              </p>
-              <div style="display: flex; align-items: center; gap: 0.75rem;">
-                <div style="width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, #10b981, #3b82f6); display: flex; align-items: center; justify-content: center; font-weight: 700;">MK</div>
-                <div>
-                  <div style="font-weight: 700; font-size: 0.95rem; color: #ffffff;">Marcus Kim</div>
-                  <div style="font-size: 0.75rem; color: var(--text-tertiary);">Cloud Architect @ Snowflake</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 6. Grand Final Call to Action -->
-      <section style="padding: 5rem 0 7rem;">
-        <div class="container">
-          <div class="glass-panel" style="background: linear-gradient(135deg, rgba(30, 27, 75, 0.8) 0%, rgba(15, 23, 42, 0.95) 100%); border: 1px solid rgba(6, 182, 212, 0.4); padding: 4rem 2rem; text-align: center; border-radius: var(--radius-xl); box-shadow: 0 0 50px rgba(6, 182, 212, 0.2);">
-            <div class="section-tag"><span class="dot"></span> Ready to Take Command?</div>
-            <h2 style="font-size: clamp(2rem, 3.5vw, 3rem); margin-bottom: 1rem;">
-              Stop Wondering. <span class="text-gradient">Start Building Your Industry Edge.</span>
+          <div class="glass-card" style="padding: 2.5rem 1.5rem; text-align: center;">
+            <div class="section-tag" style="margin-bottom: 0.5rem;">Get Started</div>
+            <h2 style="margin-bottom: 0.5rem;">
+              Ready to evaluate your readiness?
             </h2>
-            <p style="font-size: 1.15rem; max-width: 640px; margin: 0 auto 2.5rem; color: var(--text-secondary);">
-              Join thousands of ambitious students turning potential into top-tier tech placements with CareerX.
+            <p style="max-width: 580px; margin: 0 auto 1.5rem; color: var(--text-secondary);">
+              Run a complete assessment to uncover skill gaps and generate a personalized roadmap.
             </p>
-            <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
-              <button class="btn btn-primary btn-lg" id="final-cta-btn">
-                ⚡ Take Free AI Career Assessment
+            <div style="display: flex; justify-content: center; gap: 0.75rem; flex-wrap: wrap;">
+              <button class="btn btn-primary" id="final-cta-btn">
+                Start Assessment
               </button>
-              <button class="btn btn-ai btn-lg" id="final-mentor-cta-btn">
-                ✨ Ask AI Mentor a Question
+              <button class="btn btn-glass" id="final-mentor-cta-btn">
+                Ask AI Advisor
               </button>
             </div>
           </div>
@@ -329,7 +270,7 @@ export class HomeView {
     const ttMatch = document.getElementById('tt-match');
 
     this.constellationInstance = new CareerConstellation(canvas, {
-      onNodeHover: (node, clientX, clientY) => {
+      onNodeHover: (node) => {
         if (!node || !tooltip) {
           if (tooltip) tooltip.style.display = 'none';
           return;
@@ -337,7 +278,7 @@ export class HomeView {
 
         ttType.innerText = `${node.type.toUpperCase()} NODE`;
         ttTitle.innerText = node.name;
-        ttDesc.innerText = node.desc || 'Connected in your career constellation network.';
+        ttDesc.innerText = node.desc || 'Connected in your career network.';
         ttMatch.innerText = node.match ? `${node.match}% Match` : 'Active Trajectory';
         tooltip.style.display = 'block';
       },
@@ -350,7 +291,6 @@ export class HomeView {
       }
     });
 
-    // Constellation HUD buttons
     const resetBtn = document.getElementById('constellation-reset-btn');
     const zoomInBtn = document.getElementById('constellation-zoom-in-btn');
     const zoomOutBtn = document.getElementById('constellation-zoom-out-btn');
@@ -367,69 +307,69 @@ export class HomeView {
 
     const stepCards = document.querySelectorAll('.journey-step-card');
     stepCards.forEach(c => {
-      if (parseInt(c.getAttribute('data-step'), 10) === stepNumber) {
+      const stepVal = parseInt(c.getAttribute('data-step'), 10);
+      const stepSpan = c.querySelector('span');
+      if (stepVal === stepNumber) {
         c.classList.add('active');
-        c.style.borderColor = 'var(--cyan-ai)';
+        c.style.borderColor = 'var(--accent)';
+        if (stepSpan) stepSpan.style.color = 'var(--accent)';
       } else {
         c.classList.remove('active');
-        c.style.borderColor = 'rgba(99, 102, 241, 0.2)';
+        c.style.borderColor = 'var(--border-color)';
+        if (stepSpan) stepSpan.style.color = 'var(--text-secondary)';
       }
     });
 
     const stepPreviews = {
       1: `
-        <div style="text-align: center;">
-          <div style="font-size: 3rem; margin-bottom: 1rem;">🧠</div>
-          <div class="badge badge-ai" style="margin-bottom: 0.75rem;">AI Cognitive Diagnostic</div>
-          <h3 style="font-size: 1.5rem; margin-bottom: 0.75rem;">Deep Diagnostic Profiling</h3>
-          <p style="font-size: 0.95rem; margin-bottom: 1.5rem;">
-            Analyzes 5 core vectors: Mathematical Aptitude, Code Fluency, System Intuition, Work Environment Fit, and Domain Curiosity.
+        <div>
+          <div class="badge" style="margin-bottom: 0.5rem;">Diagnostic Step</div>
+          <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Diagnostic Profiling</h3>
+          <p style="font-size: 0.88rem; margin-bottom: 1rem; color: var(--text-secondary);">
+            Evaluates core vectors: Mathematics, Code Fluency, System Understanding, and Role Alignment.
           </p>
-          <div style="background: rgba(0,0,0,0.3); border-radius: var(--radius-md); padding: 1rem; text-align: left; font-size: 0.85rem; font-family: var(--font-mono); color: #38bdf8;">
-            > Output: 92% Alignment with Machine Learning Engineering<br/>
-            > Baseline Readiness: 81 / 100
+          <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.75rem; font-size: 0.8rem; font-family: var(--font-mono); color: var(--text-secondary);">
+            Target: Machine Learning Engineering<br/>
+            Baseline Readiness: 81 / 100
           </div>
         </div>
       `,
       2: `
-        <div style="text-align: center;">
-          <div style="font-size: 3rem; margin-bottom: 1rem;">⚡</div>
-          <div class="badge badge-warning" style="margin-bottom: 0.75rem;">Skill Delta Analyzer</div>
-          <h3 style="font-size: 1.5rem; margin-bottom: 0.75rem;">Dual Radar Gap Visualization</h3>
-          <p style="font-size: 0.95rem; margin-bottom: 1.5rem;">
-            Identifies that while your Python & Math are at 90%, your MLOps & Docker proficiency (48%) is the primary barrier to Tier-1 job offers.
+        <div>
+          <div class="badge" style="margin-bottom: 0.5rem;">Gap Analysis</div>
+          <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Dual Radar Visualization</h3>
+          <p style="font-size: 0.88rem; margin-bottom: 1rem; color: var(--text-secondary);">
+            Identifies specific areas requiring bridge projects to meet benchmark standards.
           </p>
-          <div style="background: rgba(0,0,0,0.3); border-radius: var(--radius-md); padding: 1rem; text-align: left; font-size: 0.85rem; font-family: var(--font-mono); color: #fb7185;">
-            > Critical Gap: Docker Containerization (-37% vs FAANG Benchmark)<br/>
-            > Suggested Fix: FastAPI + Docker Microservice Lab
+          <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.75rem; font-size: 0.8rem; font-family: var(--font-mono); color: var(--text-secondary);">
+            Critical Focus: Docker Containerization<br/>
+            Recommended: FastAPI + Docker Microservice Lab
           </div>
         </div>
       `,
       3: `
-        <div style="text-align: center;">
-          <div style="font-size: 3rem; margin-bottom: 1rem;">🗺️</div>
-          <div class="badge badge-purple" style="margin-bottom: 0.75rem;">Gamified Stage Progression</div>
-          <h3 style="font-size: 1.5rem; margin-bottom: 0.75rem;">Dynamic Learning Roadmap</h3>
-          <p style="font-size: 0.95rem; margin-bottom: 1.5rem;">
-            Breaks your journey into 5 clear stages with milestone checklists, project repos, and verifiable skill tokens.
+        <div>
+          <div class="badge" style="margin-bottom: 0.5rem;">Milestones</div>
+          <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Dynamic Roadmap</h3>
+          <p style="font-size: 0.88rem; margin-bottom: 1rem; color: var(--text-secondary);">
+            Divides learning progression into manageable stages with concrete project deliverables.
           </p>
-          <div style="background: rgba(0,0,0,0.3); border-radius: var(--radius-md); padding: 1rem; text-align: left; font-size: 0.85rem; font-family: var(--font-mono); color: #34d399;">
-            > Current: Stage 3 (LLMs & RAG Pipelines - 68% Complete)<br/>
-            > Next Unlock: Stage 4 (MLOps & Cloud Infrastructure)
+          <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.75rem; font-size: 0.8rem; font-family: var(--font-mono); color: var(--text-secondary);">
+            Current: Stage 3 (LLMs & RAG Pipelines - 68% Complete)<br/>
+            Next: Stage 4 (MLOps & Cloud Infrastructure)
           </div>
         </div>
       `,
       4: `
-        <div style="text-align: center;">
-          <div style="font-size: 3rem; margin-bottom: 1rem;">🚀</div>
-          <div class="badge badge-success" style="margin-bottom: 0.75rem;">Placement Launchpad</div>
-          <h3 style="font-size: 1.5rem; margin-bottom: 0.75rem;">ATS Resume & Mock Interview Prep</h3>
-          <p style="font-size: 0.95rem; margin-bottom: 1.5rem;">
-            Transforms resume bullets with quantifiable STAR metrics and simulates live 45-minute AI technical interviews with instant feedback.
+        <div>
+          <div class="badge" style="margin-bottom: 0.5rem;">Audit</div>
+          <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Resume & Readiness Verification</h3>
+          <p style="font-size: 0.88rem; margin-bottom: 1rem; color: var(--text-secondary);">
+            Reviews resume impact metrics and verifies keyword match against targeted job descriptions.
           </p>
-          <div style="background: rgba(0,0,0,0.3); border-radius: var(--radius-md); padding: 1rem; text-align: left; font-size: 0.85rem; font-family: var(--font-mono); color: #fbbf24;">
-            > Resume ATS Match: 74 → 88/100<br/>
-            > Interview Fluency Score: 82/100
+          <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.75rem; font-size: 0.8rem; font-family: var(--font-mono); color: var(--text-secondary);">
+            ATS Match Score: 88 / 100<br/>
+            Verified Competencies: 14 / 16
           </div>
         </div>
       `
@@ -451,7 +391,6 @@ export class HomeView {
     if (finalMentorBtn) finalMentorBtn.onclick = () => aiMentor.toggle(true);
     if (viewAllCareersBtn) viewAllCareersBtn.onclick = () => router.navigate('explorer');
 
-    // Step cards click
     const stepCards = document.querySelectorAll('.journey-step-card');
     stepCards.forEach(card => {
       card.onclick = () => {
@@ -460,7 +399,6 @@ export class HomeView {
       };
     });
 
-    // Explore role buttons
     const exploreBtns = document.querySelectorAll('.explore-role-btn');
     exploreBtns.forEach(btn => {
       btn.onclick = (e) => {

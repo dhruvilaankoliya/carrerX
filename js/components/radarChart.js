@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CareerX - Dynamic SVG Dual Radar Chart Component
+   CareerX - Dynamic SVG Dual Radar Chart Component (Vibrant)
    ========================================================================== */
 
 export class RadarChart {
@@ -24,7 +24,7 @@ export class RadarChart {
     const { size, levels, maxValue } = this.options;
     const center = size / 2;
     const radius = center - 50;
-    const angleSlice = (Math.PI * 2) / this.data.length;
+    const angleSlice = (Math.PI * 2) / (this.data.length || 1);
 
     let svg = `<svg viewBox="0 0 ${size} ${size}" class="radar-svg" style="width: 100%; height: 100%; overflow: visible;">
       <defs>
@@ -33,12 +33,12 @@ export class RadarChart {
           <stop offset="100%" stop-color="rgba(7, 11, 20, 0.4)" />
         </radialGradient>
         <linearGradient id="currentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.45" />
-          <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.15" />
+          <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.5" />
+          <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.2" />
         </linearGradient>
       </defs>`;
 
-    // 1. Draw Concentric Polygonal Web Grid & Levels
+    // 1. Concentric Polygonal Grid
     for (let level = 1; level <= levels; level++) {
       const levelRadius = (radius / levels) * level;
       let points = [];
@@ -51,16 +51,14 @@ export class RadarChart {
       svg += `<polygon points="${points.join(' ')}" fill="none" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1" />`;
     }
 
-    // 2. Draw Spokes and Axis Labels
+    // 2. Spokes & Labels
     this.data.forEach((d, i) => {
       const angle = i * angleSlice - Math.PI / 2;
       const x = center + radius * Math.cos(angle);
       const y = center + radius * Math.sin(angle);
       
-      // Spoke line
       svg += `<line x1="${center}" y1="${center}" x2="${x}" y2="${y}" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1" />`;
 
-      // Label Position with offset
       const labelRadius = radius + 22;
       const lx = center + labelRadius * Math.cos(angle);
       const ly = center + labelRadius * Math.sin(angle);
@@ -69,7 +67,7 @@ export class RadarChart {
       svg += `<text x="${lx}" y="${ly + 4}" fill="#94a3b8" font-size="11" font-weight="600" font-family="'Plus Jakarta Sans', sans-serif" text-anchor="${textAnchor}">${d.name}</text>`;
     });
 
-    // 3. Draw Target Benchmark Polygon (Dashed Violet)
+    // 3. Target Benchmark Polygon (Dashed Violet)
     let targetPoints = [];
     this.data.forEach((d, i) => {
       const angle = i * angleSlice - Math.PI / 2;
@@ -80,7 +78,7 @@ export class RadarChart {
     });
     svg += `<polygon points="${targetPoints.join(' ')}" fill="rgba(139, 92, 246, 0.12)" stroke="#8b5cf6" stroke-width="2" stroke-dasharray="5,4" />`;
 
-    // 4. Draw Student Current Polygon (Vibrant Cyan with Glow)
+    // 4. Student Current Polygon (Vibrant Cyan with Glow)
     let currentPoints = [];
     this.data.forEach((d, i) => {
       const angle = i * angleSlice - Math.PI / 2;
@@ -91,7 +89,7 @@ export class RadarChart {
     });
     svg += `<polygon points="${currentPoints.join(' ')}" fill="url(#currentGrad)" stroke="#06b6d4" stroke-width="2.5" style="filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.5));" />`;
 
-    // 5. Draw Vertices and Dots
+    // 5. Vertices and Dots
     this.data.forEach((d, i) => {
       const angle = i * angleSlice - Math.PI / 2;
       const rCurrent = (d.current / maxValue) * radius;

@@ -1,10 +1,9 @@
 /* ==========================================================================
-   CareerX - Career Explorer Directory View
+   CareerX - Career Explorer Directory View (Clean & Minimal)
    ========================================================================== */
 
 import { CAREERS_DATA } from '../data/careers.js';
 import { studentStore } from '../data/studentProfile.js';
-import { router } from '../router.js';
 
 export class ExplorerView {
   constructor(container) {
@@ -14,11 +13,11 @@ export class ExplorerView {
 
   render() {
     this.container.innerHTML = `
-      <div class="container" style="padding-top:2rem;padding-bottom:4rem;">
-        <div style="margin-bottom:2rem;">
-          <div class="section-tag"><span class="dot"></span> Career Intelligence Database</div>
-          <h2>Explore <span class="text-gradient">High-Growth Engineering Careers</span></h2>
-          <p>Compare salary ranges, skill requirements, and growth trajectories. Click "Set as Target" to instantly recalibrate your roadmap and gap analysis.</p>
+      <div class="container" style="padding-top:1.5rem;padding-bottom:3rem;">
+        <div style="margin-bottom:1.5rem;">
+          <div class="section-tag">Role Directory</div>
+          <h2>Explore Engineering Careers</h2>
+          <p>Compare compensation, skill requirements, and industry demand.</p>
         </div>
 
         <!-- Toolbar -->
@@ -27,10 +26,10 @@ export class ExplorerView {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
             </svg>
-            <input type="text" class="search-input" id="career-search" placeholder="Search careers, skills, or tools..." />
+            <input type="text" class="search-input" id="career-search" placeholder="Search careers or skills..." />
           </div>
           <div class="tab-group">
-            <button class="tab-btn active" data-filter="all">All Paths</button>
+            <button class="tab-btn active" data-filter="all">All</button>
             <button class="tab-btn" data-filter="AI & Data">AI & Data</button>
             <button class="tab-btn" data-filter="Software & Web">Software</button>
             <button class="tab-btn" data-filter="Cloud & DevOps">Cloud / DevOps</button>
@@ -59,34 +58,34 @@ export class ExplorerView {
   renderCards(careers) {
     const currentTarget = studentStore.profile.targetCareerId;
     return careers.map(c => `
-      <div class="career-card ${c.id === currentTarget ? 'target-active' : ''}" data-career-id="${c.id}" style="cursor:pointer;">
+      <div class="career-card ${c.id === currentTarget ? 'target-active' : ''}" data-career-id="${c.id}">
         <div>
           <div class="career-card-top">
             <div class="career-icon-box">${c.icon}</div>
-            <span class="career-match-pill">${c.matchScore}% Fit</span>
+            <span class="career-match-pill">${c.matchScore}% Match</span>
           </div>
           <h3 class="career-title">${c.title}</h3>
           <p class="career-desc">${c.description}</p>
           <div class="career-tags-cloud">
-            ${c.requiredSkills.slice(0, 5).map(s => `<span class="tech-tag">${s}</span>`).join('')}
+            ${c.requiredSkills.slice(0, 4).map(s => `<span class="tech-tag">${s}</span>`).join('')}
           </div>
         </div>
         <div>
           <div class="career-stats-row">
             <div class="career-stat-item">
-              <span class="stat-label">Avg. Salary</span>
-              <span class="stat-val" style="color:#38bdf8;font-size:0.82rem;">${c.salaryRange}</span>
+              <span class="stat-label">Salary</span>
+              <span class="stat-val">${c.salaryRange}</span>
             </div>
             <div class="career-stat-item" style="text-align:right;">
-              <span class="stat-label">Growth</span>
-              <span class="stat-val" style="color:#34d399;font-size:0.82rem;">${c.growthRate}</span>
+              <span class="stat-label">Demand</span>
+              <span class="stat-val">${c.growthRate}</span>
             </div>
           </div>
           <div style="display:flex;gap:0.5rem;">
-            <button class="btn btn-sm btn-glass open-career-modal" data-career-id="${c.id}" style="flex:1;">View Details</button>
+            <button class="btn btn-sm btn-glass open-career-modal" data-career-id="${c.id}" style="flex:1;">Details</button>
             ${c.id === currentTarget
-              ? `<button class="btn btn-sm btn-ai" disabled style="flex:1;">✓ Current Target</button>`
-              : `<button class="btn btn-sm btn-primary set-target-btn" data-career-id="${c.id}" style="flex:1;">Set as Target</button>`
+              ? `<button class="btn btn-sm btn-glass" disabled style="flex:1;border-color:var(--accent);color:var(--accent);">Target Role</button>`
+              : `<button class="btn btn-sm btn-primary set-target-btn" data-career-id="${c.id}" style="flex:1;">Set Target</button>`
             }
           </div>
         </div>
@@ -95,13 +94,11 @@ export class ExplorerView {
   }
 
   bindEvents() {
-    // Search
     document.getElementById('career-search')?.addEventListener('input', (e) => {
       this.filterText = e.target.value.toLowerCase();
       this.filterCards();
     });
 
-    // Filter tabs
     document.querySelectorAll('.tab-btn[data-filter]').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.tab-btn[data-filter]').forEach(b => b.classList.remove('active'));
@@ -110,12 +107,11 @@ export class ExplorerView {
       });
     });
 
-    // Set target
     document.addEventListener('click', (e) => {
       const setBtn = e.target.closest('.set-target-btn');
       if (setBtn) {
         studentStore.setTargetCareer(setBtn.dataset.careerId);
-        this.render(); // Re-render with updated target
+        this.render();
         return;
       }
 
@@ -125,13 +121,11 @@ export class ExplorerView {
         return;
       }
 
-      // Close modal on overlay click
       if (e.target.id === 'career-modal') {
         this.closeModal();
       }
     });
 
-    // Close button
     document.getElementById('career-modal')?.addEventListener('click', (e) => {
       if (e.target.id === 'career-modal') this.closeModal();
     });
@@ -159,13 +153,13 @@ export class ExplorerView {
     if (!header || !body) return;
 
     header.innerHTML = `
-      <div style="display:flex;align-items:center;gap:1rem;">
-        <span style="font-size:2rem;">${c.icon}</span>
+      <div style="display:flex;align-items:center;gap:0.75rem;">
+        <span style="font-size:1.5rem;">${c.icon}</span>
         <div>
-          <h3>${c.title}</h3>
-          <div style="display:flex;gap:0.5rem;margin-top:0.3rem;">
-            <span class="badge badge-ai">${c.matchScore}% Fit</span>
-            <span class="badge badge-success">${c.demandLevel} Demand</span>
+          <h3 style="font-size:1.1rem;margin:0;">${c.title}</h3>
+          <div style="display:flex;gap:0.35rem;margin-top:0.25rem;">
+            <span class="badge badge-active">${c.matchScore}% Match</span>
+            <span class="badge">${c.demandLevel} Demand</span>
           </div>
         </div>
       </div>
@@ -173,49 +167,49 @@ export class ExplorerView {
     `;
 
     body.innerHTML = `
-      <p style="margin-bottom:1.5rem;">${c.description}</p>
+      <p style="margin-bottom:1.25rem;font-size:0.9rem;color:var(--text-secondary);">${c.description}</p>
 
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:1.5rem;">
-        <div class="glass-card" style="padding:1rem;">
-          <div style="font-size:0.72rem;color:var(--text-tertiary);text-transform:uppercase;">Salary Range</div>
-          <div style="font-weight:800;color:#38bdf8;">${c.salaryRange}</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0.75rem;margin-bottom:1.25rem;">
+        <div class="glass-card" style="padding:0.75rem;">
+          <div style="font-size:0.7rem;color:var(--text-tertiary);text-transform:uppercase;">Salary Range</div>
+          <div style="font-weight:600;font-size:0.95rem;color:var(--text-primary);">${c.salaryRange}</div>
         </div>
-        <div class="glass-card" style="padding:1rem;">
-          <div style="font-size:0.72rem;color:var(--text-tertiary);text-transform:uppercase;">Growth</div>
-          <div style="font-weight:800;color:#34d399;">${c.growthRate}</div>
+        <div class="glass-card" style="padding:0.75rem;">
+          <div style="font-size:0.7rem;color:var(--text-tertiary);text-transform:uppercase;">Growth</div>
+          <div style="font-weight:600;font-size:0.95rem;color:var(--text-primary);">${c.growthRate}</div>
         </div>
-        <div class="glass-card" style="padding:1rem;">
-          <div style="font-size:0.72rem;color:var(--text-tertiary);text-transform:uppercase;">Demand</div>
-          <div style="font-weight:800;color:#c084fc;">${c.demandLevel}</div>
+        <div class="glass-card" style="padding:0.75rem;">
+          <div style="font-size:0.7rem;color:var(--text-tertiary);text-transform:uppercase;">Demand Level</div>
+          <div style="font-weight:600;font-size:0.95rem;color:var(--text-primary);">${c.demandLevel}</div>
         </div>
       </div>
 
-      <h4 style="margin-bottom:0.75rem;">Required Skills</h4>
-      <div class="career-tags-cloud" style="margin-bottom:1.5rem;">
-        ${c.requiredSkills.map(s => `<span class="tech-tag" style="font-size:0.82rem;padding:0.3rem 0.7rem;">${s}</span>`).join('')}
+      <h4 style="margin-bottom:0.5rem;font-size:0.9rem;">Required Skills</h4>
+      <div class="career-tags-cloud" style="margin-bottom:1.25rem;">
+        ${c.requiredSkills.map(s => `<span class="tech-tag">${s}</span>`).join('')}
       </div>
 
-      <h4 style="margin-bottom:0.75rem;">Top Tools & Ecosystem</h4>
-      <div class="career-tags-cloud" style="margin-bottom:1.5rem;">
-        ${c.topTools.map(t => `<span class="tech-tag" style="background:rgba(6,182,212,0.1);border-color:rgba(6,182,212,0.25);color:#38bdf8;">${t}</span>`).join('')}
+      <h4 style="margin-bottom:0.5rem;font-size:0.9rem;">Ecosystem Tools</h4>
+      <div class="career-tags-cloud" style="margin-bottom:1.25rem;">
+        ${c.topTools.map(t => `<span class="tech-tag">${t}</span>`).join('')}
       </div>
 
-      <h4 style="margin-bottom:0.75rem;">Career Progression Path</h4>
-      <div style="display:flex;flex-direction:column;gap:0.5rem;margin-bottom:2rem;">
+      <h4 style="margin-bottom:0.5rem;font-size:0.9rem;">Progression Path</h4>
+      <div style="display:flex;flex-direction:column;gap:0.4rem;margin-bottom:1.5rem;">
         ${c.growthPath.map((p, i) => `
-          <div style="display:flex;align-items:center;gap:1rem;padding:0.75rem;background:rgba(255,255,255,0.03);border-radius:var(--radius-md);">
-            <span style="font-family:var(--font-mono);font-size:0.75rem;color:var(--cyan-ai);min-width:40px;">${(i+1).toString().padStart(2,'0')}</span>
-            <div style="flex:1;font-weight:600;color:#fff;">${p.role}</div>
+          <div style="display:flex;align-items:center;gap:0.75rem;padding:0.6rem;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:var(--radius-sm);">
+            <span style="font-family:var(--font-mono);font-size:0.72rem;color:var(--text-tertiary);min-width:24px;">${(i+1).toString().padStart(2,'0')}</span>
+            <div style="flex:1;font-weight:500;font-size:0.85rem;color:var(--text-primary);">${p.role}</div>
             <div style="text-align:right;">
-              <div style="font-weight:700;color:#34d399;font-size:0.85rem;">${p.salary}</div>
-              <div style="font-size:0.72rem;color:var(--text-tertiary);">${p.timeline}</div>
+              <div style="font-weight:600;color:var(--text-primary);font-size:0.82rem;">${p.salary}</div>
+              <div style="font-size:0.68rem;color:var(--text-tertiary);">${p.timeline}</div>
             </div>
           </div>
         `).join('')}
       </div>
 
       <button class="btn btn-primary" style="width:100%;" id="modal-set-target-btn" data-career-id="${c.id}">
-        🎯 Set as My Target Career
+        Set as Target Career
       </button>
     `;
 

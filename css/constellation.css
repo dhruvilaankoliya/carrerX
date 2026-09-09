@@ -1,16 +1,15 @@
 /* ==========================================================================
-   The Career Constellation - Interactive Canvas & Graph HUD
+   The Career Constellation - Clean & Minimal Canvas & Graph HUD
    ========================================================================== */
 
 .constellation-wrapper {
   position: relative;
   width: 100%;
-  height: 580px;
-  background: radial-gradient(circle at center, #0e172e 0%, #070b14 100%);
-  border: 1px solid rgba(99, 102, 241, 0.25);
-  border-radius: var(--radius-xl);
+  height: 520px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
   overflow: hidden;
-  box-shadow: var(--shadow-lg), 0 0 35px rgba(59, 130, 246, 0.15);
 }
 
 .constellation-canvas {
@@ -27,9 +26,9 @@
 /* Constellation HUD Controls */
 .constellation-hud {
   position: absolute;
-  top: 1.25rem;
-  left: 1.25rem;
-  right: 1.25rem;
+  top: 1rem;
+  left: 1rem;
+  right: 1rem;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -42,47 +41,48 @@
 }
 
 .constellation-legend {
-  background: rgba(11, 18, 34, 0.85);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(99, 102, 241, 0.25);
-  border-radius: var(--radius-md);
-  padding: 0.75rem 1.2rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.85rem;
   display: flex;
-  gap: 1.2rem;
+  gap: 0.85rem;
   align-items: center;
-  font-size: 0.78rem;
-  font-weight: 600;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
 }
 
 .legend-item {
   display: flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.35rem;
 }
 
 .legend-dot {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
+  background: var(--text-muted);
 }
 
-.legend-dot.skill { background: #3b82f6; box-shadow: 0 0 8px #3b82f6; }
-.legend-dot.interest { background: #8b5cf6; box-shadow: 0 0 8px #8b5cf6; }
-.legend-dot.course { background: #06b6d4; box-shadow: 0 0 8px #06b6d4; }
-.legend-dot.project { background: #10b981; box-shadow: 0 0 8px #10b981; }
-.legend-dot.career { background: #f59e0b; box-shadow: 0 0 12px #f59e0b; }
+.legend-dot.skill { background: var(--accent); }
+.legend-dot.interest { background: #94a3b8; }
+.legend-dot.course { background: #64748b; }
+.legend-dot.project { background: #cbd5e1; }
+.legend-dot.career { background: #ffffff; }
 
 .constellation-controls {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.35rem;
 }
 
 .hud-btn {
-  background: rgba(11, 18, 34, 0.85);
-  border: 1px solid rgba(99, 102, 241, 0.25);
-  color: var(--text-primary);
-  width: 38px;
-  height: 38px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  width: 32px;
+  height: 32px;
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
@@ -92,63 +92,56 @@
 }
 
 .hud-btn:hover {
-  background: rgba(59, 130, 246, 0.2);
-  border-color: var(--electric-blue);
-  box-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
+  background: var(--bg-surface-hover);
+  color: var(--text-primary);
+  border-color: var(--accent);
 }
 
 /* Node Info Floating Popup */
 .node-tooltip-card {
   position: absolute;
-  bottom: 1.5rem;
-  left: 1.5rem;
-  background: rgba(11, 18, 34, 0.92);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(6, 182, 212, 0.35);
-  border-radius: var(--radius-md);
-  padding: 1.1rem 1.4rem;
-  max-width: 340px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(6, 182, 212, 0.2);
+  bottom: 1rem;
+  left: 1rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 1rem;
+  max-width: 300px;
+  box-shadow: var(--shadow-md);
   z-index: 12;
-  transition: opacity var(--transition-fast), transform var(--transition-fast);
+  transition: opacity var(--transition-fast);
   pointer-events: auto;
 }
 
 .node-tooltip-type {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-weight: 700;
-  margin-bottom: 0.25rem;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 0.2rem;
 }
 
 .node-tooltip-title {
   font-family: var(--font-heading);
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: #ffffff;
-  margin-bottom: 0.4rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
 }
 
 .node-tooltip-desc {
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   color: var(--text-secondary);
   line-height: 1.4;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
 }
 
 .node-tooltip-meta {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 0.78rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding-top: 0.6rem;
-}
-
-/* Pulse animation for target career center star */
-@keyframes targetStarPulse {
-  0% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.6)); }
-  50% { transform: scale(1.15); filter: drop-shadow(0 0 25px rgba(245, 158, 11, 0.9)); }
-  100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.6)); }
+  font-size: 0.75rem;
+  border-top: 1px solid var(--border-color);
+  padding-top: 0.4rem;
 }

@@ -17,7 +17,7 @@ class StudentStore {
       scores: {
         skills: 84,        // 35% weight
         projects: 76,      // 25% weight
-        resume: 74,        // 15% weight
+        resume: null,      // null until user uploads/analyzes resume
         interview: 82,     // 15% weight
         certifications: 90 // 10% weight
       },
@@ -130,24 +130,12 @@ class StudentStore {
         }
       ],
       resumeAudit: {
-        score: 74,
-        status: 'Good • 4 High-Impact Gaps',
-        foundKeywords: ['Python', 'PyTorch', 'REST APIs', 'SQL', 'Scikit-Learn', 'Git', 'Data Pipelines', 'Pandas', 'Linear Algebra'],
-        missingKeywords: ['Docker', 'Kubernetes', 'FastAPI', 'MLOps', 'Vector DB (Pinecone)', 'CI/CD', 'Model Monitoring'],
-        bulletRewrites: [
-          {
-            section: 'Projects • Financial RAG Agent',
-            original: 'Built a question-answering tool using Python and LLMs to search PDF documents.',
-            improved: 'Architected high-throughput RAG search engine with Llama-3 and Pinecone, reducing document query latency by 42% across 10,000+ financial filings.',
-            impact: '+18% Impact Score • Added Quantified Metric'
-          },
-          {
-            section: 'Experience • AI Lab Intern',
-            original: 'Helped the team train machine learning models and clean dataset files.',
-            improved: 'Engineered automated PyTorch data augmentation pipeline, increasing validation accuracy from 84.2% to 92.6% while cutting GPU training cycle time by 28%.',
-            impact: '+22% Impact Score • Strong Action Verbs'
-          }
-        ]
+        uploaded: false,
+        score: null,
+        status: null,
+        foundKeywords: [],
+        missingKeywords: [],
+        bulletRewrites: []
       }
     };
 
@@ -196,7 +184,8 @@ class StudentStore {
 
   recalculateScores() {
     const s = this.profile.scores;
-    const computed = Math.round((s.skills * 0.35) + (s.projects * 0.25) + (s.resume * 0.15) + (s.interview * 0.15) + (s.certifications * 0.10));
+    const resumeVal = (s.resume !== null && s.resume !== undefined) ? s.resume : 70;
+    const computed = Math.round((s.skills * 0.35) + (s.projects * 0.25) + (resumeVal * 0.15) + (s.interview * 0.15) + (s.certifications * 0.10));
     this.profile.overallScore = Math.max(50, Math.min(99, computed));
     
     if (this.profile.overallScore >= 85) {

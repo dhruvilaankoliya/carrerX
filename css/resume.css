@@ -1,22 +1,37 @@
 /* ==========================================================================
-   Resume Intelligence & ATS Optimization Styles
+   CareerX - Resume Intelligence, ATS Optimization & Study Resources (Vibrant)
    ========================================================================== */
 
 .resume-layout-grid {
   display: grid;
   grid-template-columns: 1fr 1.3fr;
-  gap: 2rem;
+  gap: 1.75rem;
   margin-top: 1.5rem;
 }
 
 .ats-score-card {
   background: var(--bg-glass-card);
-  border: 1px solid rgba(99, 102, 241, 0.25);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(99, 102, 241, 0.28);
   border-radius: var(--radius-xl);
   padding: 2rem;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  box-shadow: var(--shadow-md), 0 0 30px rgba(99, 102, 241, 0.12);
+  position: relative;
+  overflow: hidden;
+}
+
+.ats-score-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.4), transparent);
 }
 
 .ats-score-header {
@@ -25,20 +40,10 @@
   justify-content: space-between;
 }
 
-.ats-dial-large {
-  width: 140px;
-  height: 140px;
-  margin: 0 auto;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .keywords-section {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .keyword-chips-wrap {
@@ -51,38 +56,56 @@
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  padding: 0.35rem 0.75rem;
+  padding: 0.3rem 0.75rem;
   border-radius: var(--radius-full);
   font-size: 0.8rem;
   font-weight: 600;
+  transition: all var(--transition-fast);
 }
 
 .kw-found {
-  background: rgba(16, 185, 129, 0.12);
+  background: rgba(16, 185, 129, 0.14);
   color: #34d399;
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.15);
 }
 
 .kw-missing {
-  background: rgba(244, 63, 94, 0.12);
+  background: rgba(244, 63, 94, 0.14);
   color: #fb7185;
-  border: 1px solid rgba(244, 63, 94, 0.3);
+  border: 1px solid rgba(244, 63, 94, 0.35);
+  box-shadow: 0 0 10px rgba(244, 63, 94, 0.15);
 }
 
 /* Bullet Optimizer Section */
 .bullet-optimizer-card {
   background: var(--bg-glass-card);
-  border: 1px solid rgba(99, 102, 241, 0.25);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(99, 102, 241, 0.28);
   border-radius: var(--radius-xl);
   padding: 2rem;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  box-shadow: var(--shadow-md), 0 0 30px rgba(6, 182, 212, 0.12);
+  position: relative;
+  overflow: hidden;
+}
+
+.bullet-optimizer-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.4), transparent);
 }
 
 .bullet-comparison-item {
   background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-md);
   padding: 1.25rem;
   display: flex;
@@ -91,22 +114,17 @@
 }
 
 .bullet-box {
-  padding: 0.85rem 1rem;
+  padding: 0.85rem 1.1rem;
   border-radius: var(--radius-sm);
   font-size: 0.88rem;
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
+/* Red/Pink Tone for Before Block */
 .bullet-box.before {
-  background: rgba(244, 63, 94, 0.06);
-  border-left: 3px solid var(--coral-gap);
+  background: rgba(244, 63, 94, 0.08);
+  border-left: 3.5px solid var(--coral-gap);
   color: var(--text-secondary);
-}
-
-.bullet-box.after {
-  background: rgba(16, 185, 129, 0.08);
-  border-left: 3px solid var(--emerald-growth);
-  color: var(--text-primary);
 }
 
 .bullet-tag-before {
@@ -114,7 +132,15 @@
   font-weight: 700;
   color: var(--coral-gap);
   text-transform: uppercase;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.35rem;
+  letter-spacing: 0.04em;
+}
+
+/* Green Tone for After/Improved Block */
+.bullet-box.after {
+  background: rgba(16, 185, 129, 0.08);
+  border-left: 3.5px solid var(--emerald-growth);
+  color: var(--text-primary);
 }
 
 .bullet-tag-after {
@@ -122,7 +148,161 @@
   font-weight: 700;
   color: var(--emerald-growth);
   text-transform: uppercase;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.35rem;
+  letter-spacing: 0.04em;
+}
+
+/* Copy Bullet Action Button */
+.copy-bullet-btn {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  font-weight: 600;
+}
+
+.copy-bullet-btn:hover {
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  color: #ffffff;
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+}
+
+/* Career Recommendation Panel */
+.career-recommendation-panel {
+  background: var(--bg-glass-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.5), 0 0 30px rgba(139, 92, 246, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.career-recommendation-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.5), transparent);
+}
+
+.career-rec-card {
+  transition: all var(--transition-normal);
+}
+
+.career-rec-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(99, 102, 241, 0.5) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 15px rgba(99, 102, 241, 0.2);
+}
+
+/* Study Resources Panel */
+.study-resources-panel {
+  background: var(--bg-glass-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.5), 0 0 30px rgba(6, 182, 212, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.study-resources-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.5), transparent);
+}
+
+.resource-item {
+  transition: all var(--transition-fast);
+}
+
+.resource-item:hover {
+  border-color: var(--cyan-ai) !important;
+  box-shadow: 0 0 14px rgba(6, 182, 212, 0.2);
+  transform: translateX(2px);
+}
+
+.resource-item.studied {
+  background: rgba(16, 185, 129, 0.08) !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
+}
+
+/* Empty State Styles */
+.empty-state-notice {
+  padding: 0.85rem 1rem;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  color: var(--text-tertiary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.bullet-empty-placeholder {
+  background: rgba(11, 18, 34, 0.55);
+  border: 1.5px dashed rgba(99, 102, 241, 0.28);
+  border-radius: var(--radius-md);
+  padding: 2.25rem 1.5rem;
+  text-align: center;
+  margin-top: 0.5rem;
+  transition: all var(--transition-normal);
+}
+
+.bullet-empty-placeholder:hover {
+  border-color: rgba(6, 182, 212, 0.4);
+  background: rgba(11, 18, 34, 0.7);
+}
+
+/* Spinner & Loading Skeleton */
+.resume-loader-container {
+  background: rgba(11, 18, 34, 0.75);
+  border: 1px solid rgba(6, 182, 212, 0.35);
+  border-radius: var(--radius-md);
+  padding: 2rem;
+  text-align: center;
+  margin: 1rem 0;
+  box-shadow: 0 0 25px rgba(6, 182, 212, 0.15);
+}
+
+.resume-spinner {
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 1rem;
+  border: 3.5px solid rgba(6, 182, 212, 0.2);
+  border-top-color: var(--cyan-ai);
+  border-radius: 50%;
+  animation: resumeSpin 0.75s linear infinite;
+}
+
+@keyframes resumeSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.skeleton-line {
+  height: 12px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0.05) 75%);
+  background-size: 200% 100%;
+  animation: skeletonShimmer 1.5s infinite;
+  border-radius: var(--radius-full);
+  margin: 0.5rem auto;
+}
+
+@keyframes skeletonShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 @media (max-width: 1024px) {

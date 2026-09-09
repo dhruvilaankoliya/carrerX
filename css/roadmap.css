@@ -1,9 +1,11 @@
 /* ==========================================================================
-   Personalized Career Roadmap (Gamified Journey Timeline) Styles
+   Personalized Career Roadmap (Gamified Journey Timeline) - Vibrant
    ========================================================================== */
 
 .roadmap-header-card {
   background: var(--bg-glass-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(99, 102, 241, 0.3);
   border-radius: var(--radius-xl);
   padding: 2rem 2.5rem;
@@ -13,6 +15,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 1.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 25px rgba(99, 102, 241, 0.15);
 }
 
 .roadmap-timeline-container {
@@ -39,22 +42,25 @@
   margin-left: 80px;
   margin-bottom: 2.5rem;
   background: var(--bg-glass-card);
-  border: 1px solid rgba(99, 102, 241, 0.2);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(99, 102, 241, 0.22);
   border-radius: var(--radius-lg);
   padding: 1.75rem 2rem;
   transition: all var(--transition-normal);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
 }
 
 .roadmap-stage-card:hover {
   border-color: rgba(99, 102, 241, 0.5);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 25px rgba(59, 130, 246, 0.15);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 25px rgba(59, 130, 246, 0.2);
   transform: translateY(-2px);
 }
 
 .roadmap-stage-card.active-stage {
   border-color: var(--cyan-ai);
   box-shadow: 0 10px 35px rgba(0, 0, 0, 0.5), 0 0 30px rgba(6, 182, 212, 0.25);
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.06) 0%, rgba(17, 26, 48, 0.9) 100%);
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, rgba(17, 26, 48, 0.92) 100%);
 }
 
 .roadmap-stage-card.completed-stage {
@@ -84,7 +90,7 @@
   background: var(--emerald-growth);
   border-color: #ffffff;
   color: #ffffff;
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
 }
 
 .roadmap-stage-card.active-stage .stage-marker-node {
@@ -92,12 +98,6 @@
   border-color: var(--cyan-ai);
   color: #ffffff;
   box-shadow: 0 0 25px rgba(6, 182, 212, 0.6);
-  animation: pulseActiveMarker 2s infinite;
-}
-
-@keyframes pulseActiveMarker {
-  0%, 100% { transform: translateX(12px) scale(1); }
-  50% { transform: translateX(12px) scale(1.1); }
 }
 
 .stage-top-meta {
@@ -130,7 +130,7 @@
 
 .deliverable-box:hover {
   background: rgba(99, 102, 241, 0.08);
-  border-color: rgba(99, 102, 241, 0.3);
+  border-color: rgba(99, 102, 241, 0.35);
 }
 
 .deliverable-type {

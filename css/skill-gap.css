@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Skill Gap Analysis & Dual Radar Visualizer Styles
+   Skill Gap Analysis & Dual Radar Visualizer Styles (Vibrant)
    ========================================================================== */
 
 .skill-gap-layout {
@@ -12,13 +12,16 @@
 /* Radar Chart Canvas Container */
 .radar-chart-card {
   background: var(--bg-glass-card);
-  border: 1px solid rgba(99, 102, 241, 0.25);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(99, 102, 241, 0.28);
   border-radius: var(--radius-xl);
   padding: 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
+  box-shadow: var(--shadow-md), 0 0 30px rgba(99, 102, 241, 0.12);
 }
 
 .radar-svg-container {
@@ -54,12 +57,15 @@
 /* Priority Deficit Matrix */
 .deficit-matrix-card {
   background: var(--bg-glass-card);
-  border: 1px solid rgba(99, 102, 241, 0.25);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(99, 102, 241, 0.28);
   border-radius: var(--radius-xl);
   padding: 2rem;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  box-shadow: var(--shadow-md), 0 0 30px rgba(139, 92, 246, 0.12);
 }
 
 .deficit-category {
@@ -95,7 +101,7 @@
 
 .skill-gap-row:hover {
   background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(99, 102, 241, 0.3);
+  border-color: rgba(99, 102, 241, 0.35);
 }
 
 .skill-row-top {
@@ -129,9 +135,10 @@
   top: 0;
   left: 0;
   height: 100%;
-  background: var(--cyan-ai);
+  background: linear-gradient(90deg, #06b6d4, #3b82f6);
   border-radius: var(--radius-full);
   transition: width 0.8s ease;
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.4);
 }
 
 .skill-target-marker {

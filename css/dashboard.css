@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Student Dashboard / Career Command Center Styles
+   Student Dashboard / Career Command Center - Rich & Vibrant Styles
    ========================================================================== */
 
 .dashboard-grid {
@@ -11,8 +11,8 @@
 
 /* Welcome & Persona Banner */
 .dashboard-banner {
-  background: linear-gradient(135deg, rgba(30, 27, 75, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%);
-  border: 1px solid rgba(139, 92, 246, 0.3);
+  background: linear-gradient(135deg, rgba(30, 27, 75, 0.75) 0%, rgba(15, 23, 42, 0.92) 100%);
+  border: 1px solid rgba(139, 92, 246, 0.35);
   border-radius: var(--radius-xl);
   padding: 2rem 2.5rem;
   position: relative;
@@ -20,7 +20,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 30px rgba(99, 102, 241, 0.15);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 30px rgba(99, 102, 241, 0.2);
   margin-bottom: 2rem;
 }
 
@@ -31,20 +31,20 @@
   right: -50px;
   width: 250px;
   height: 250px;
-  background: radial-gradient(circle, rgba(6, 182, 212, 0.2) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.25) 0%, transparent 70%);
   filter: blur(40px);
   pointer-events: none;
 }
 
 .banner-user-info h1 {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
+  font-size: 1.9rem;
+  margin-bottom: 0.4rem;
 }
 
 .banner-meta {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
   flex-wrap: wrap;
   margin-top: 0.75rem;
 }
@@ -60,9 +60,10 @@
   align-items: center;
   gap: 1.5rem;
   background: rgba(11, 18, 34, 0.85);
-  border: 1px solid rgba(99, 102, 241, 0.25);
+  border: 1px solid rgba(99, 102, 241, 0.28);
   border-radius: var(--radius-lg);
   padding: 1.5rem 2rem;
+  box-shadow: var(--shadow-md), 0 0 25px rgba(99, 102, 241, 0.12);
 }
 
 .readiness-dial-container {
@@ -92,6 +93,7 @@
   stroke-width: 8;
   stroke-linecap: round;
   transition: stroke-dashoffset 1s ease-in-out;
+  filter: drop-shadow(0 0 6px rgba(6, 182, 212, 0.5));
 }
 
 .readiness-dial-text {
@@ -115,12 +117,12 @@
 
 /* AI Tactical Daily Briefing */
 .ai-briefing-card {
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, rgba(17, 26, 48, 0.8) 100%);
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(17, 26, 48, 0.85) 100%);
   border: 1px solid rgba(6, 182, 212, 0.35);
   border-radius: var(--radius-lg);
   padding: 1.6rem;
   position: relative;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), 0 0 25px rgba(6, 182, 212, 0.12);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), 0 0 25px rgba(6, 182, 212, 0.15);
 }
 
 .ai-briefing-header {
@@ -173,8 +175,8 @@
 
 .quest-item:hover {
   background: rgba(99, 102, 241, 0.08);
-  border-color: rgba(99, 102, 241, 0.3);
-  transform: translateX(4px);
+  border-color: rgba(99, 102, 241, 0.35);
+  transform: translateX(3px);
 }
 
 .quest-item.completed {
@@ -198,7 +200,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all var(--transition-fast);
 }
 
 .quest-item.completed .quest-checkbox {
@@ -222,14 +223,14 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
-  margin-top: 1.5rem;
+  margin-top: 1.75rem;
 }
 
 .dock-card {
   background: var(--bg-surface);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-md);
-  padding: 1.2rem;
+  padding: 1.25rem;
   text-align: center;
   cursor: pointer;
   transition: all var(--transition-normal);
@@ -238,8 +239,8 @@
 .dock-card:hover {
   background: rgba(99, 102, 241, 0.12);
   border-color: var(--electric-blue);
-  transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 0 15px rgba(59, 130, 246, 0.2);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 0 15px rgba(59, 130, 246, 0.25);
 }
 
 .dock-icon {

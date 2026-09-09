@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CareerX - Circular SVG Readiness Gauge & Score Breakdown
+   CareerX - Circular SVG Readiness Gauge & Score Breakdown (Vibrant)
    ========================================================================== */
 
 export class ReadinessDial {
@@ -32,7 +32,7 @@ export class ReadinessDial {
           stroke-width="${strokeWidth}" 
           stroke-dasharray="${circumference}" 
           stroke-dashoffset="${offset}" 
-          style="filter: drop-shadow(0 0 6px rgba(6, 182, 212, 0.4));"
+          style="filter: drop-shadow(0 0 6px rgba(6, 182, 212, 0.5));"
         />
       </svg>
     `;
@@ -50,7 +50,7 @@ export class ReadinessDial {
           <div style="display: flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 0.88rem;">
             <span>${icon}</span>
             <span>${label}</span>
-            <span style="font-size: 0.72rem; color: var(--text-tertiary); font-weight: 500;">(Weight ${weight}%)</span>
+            <span style="font-size: 0.72rem; color: var(--text-tertiary); font-weight: 500;">(${weight}%)</span>
           </div>
           <div style="font-family: var(--font-mono); font-weight: 700; font-size: 0.9rem; color: ${color};">
             ${score}/100
