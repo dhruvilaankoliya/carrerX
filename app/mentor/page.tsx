@@ -57,35 +57,29 @@ export default function MentorPage() {
   const fetchProfileAndHistory = async () => {
     try {
       const res = await fetch('/api/auth/me');
-      if (!res.ok) {
-        router.push('/login');
-        return;
-      }
+      if (res.ok) {
+        const json = await res.json();
+        if (json.authenticated && json.user) {
+          setData(json.user);
 
-      const json = await res.json();
-      if (!json.authenticated || !json.user) {
-        router.push('/login');
-        return;
-      }
+          const historyRes = await fetch('/api/mentor/chat');
+          if (historyRes.ok) {
+            const historyData = await historyRes.json();
+            setActiveProvider(historyData.activeProvider || 'CareerX Engine');
+            setIsLlmConnected(Boolean(historyData.isLlmConnected || localStorage.getItem('careerx_custom_llm_key')));
 
-      setData(json.user);
-
-      const historyRes = await fetch('/api/mentor/chat');
-      if (historyRes.ok) {
-        const historyData = await historyRes.json();
-        setActiveProvider(historyData.activeProvider || 'CareerX Engine');
-        setIsLlmConnected(Boolean(historyData.isLlmConnected || localStorage.getItem('careerx_custom_llm_key')));
-
-        if (historyData.messages && historyData.messages.length > 0) {
-          setMessages(historyData.messages);
-        } else {
-          initWelcomeMessage(json.user);
+            if (historyData.messages && historyData.messages.length > 0) {
+              setMessages(historyData.messages);
+            } else {
+              initWelcomeMessage(json.user);
+            }
+          } else {
+            initWelcomeMessage(json.user);
+          }
         }
-      } else {
-        initWelcomeMessage(json.user);
       }
-    } catch {
-      router.push('/login');
+    } catch (e) {
+      console.error('Failed to load mentor profile/history:', e);
     } finally {
       setLoading(false);
     }

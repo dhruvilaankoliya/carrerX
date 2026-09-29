@@ -35,28 +35,47 @@ export function verifyToken(token: string): UserSession | null {
 
 export async function getCurrentUser(): Promise<{ user: any; profile: any } | null> {
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get(AUTH_COOKIE_NAME)?.value;
-    if (!token) return null;
+    let userId: string | null = null;
+    try {
+      const cookieStore = await cookies();
+      const token = cookieStore.get(AUTH_COOKIE_NAME)?.value;
+      if (token) {
+        const decoded = verifyToken(token);
+        if (decoded?.userId) {
+          userId = decoded.userId;
+        }
+      }
+    } catch {
+      // Ignore cookie errors in non-standard context
+    }
 
-    const decoded = verifyToken(token);
-    if (!decoded || !decoded.userId) return null;
-
-    const user = await db.user.findUnique({
-      where: { id: decoded.userId },
-      include: {
-        profile: true,
-        resumeData: true,
-        learningProfile: true,
-        readinessScores: { orderBy: { computedAt: 'desc' }, take: 1 },
-        careerMatches: { orderBy: { matchScore: 'desc' } },
-        roadmaps: {
-          include: { phases: { orderBy: { phaseNumber: 'asc' } } },
-          orderBy: { generatedAt: 'desc' },
-          take: 1,
-        },
+    const includeOptions = {
+      profile: true,
+      resumeData: true,
+      learningProfile: true,
+      readinessScores: { orderBy: { computedAt: 'desc' as const }, take: 1 },
+      careerMatches: { orderBy: { matchScore: 'desc' as const } },
+      roadmaps: {
+        include: { phases: { orderBy: { phaseNumber: 'asc' as const } } },
+        orderBy: { generatedAt: 'desc' as const },
+        take: 1,
       },
-    });
+    };
+
+    let user = null;
+    if (userId) {
+      user = await db.user.findUnique({
+        where: { id: userId },
+        include: includeOptions,
+      });
+    }
+
+    // Default/fallback user so login is never required
+    if (!user) {
+      user = await db.user.findFirst({
+        include: includeOptions,
+      });
+    }
 
     if (!user) return null;
     return { user, profile: user.profile };

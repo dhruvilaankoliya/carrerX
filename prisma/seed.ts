@@ -4,6 +4,7 @@ import { computeReadinessIndex } from '../lib/scoring/readinessIndex';
 import { computeCareerMatches } from '../lib/scoring/careerMatcher';
 import { generatePersonalizedRoadmap } from '../lib/roadmap/roadmapGenerator';
 import { computeLearningProfile } from '../lib/scoring/learningProfile';
+import { seedDemoUsers } from './seedDemoUsers';
 
 const prisma = new PrismaClient();
 
@@ -33,14 +34,22 @@ async function main() {
           gradYear: 2026,
           cgpa: 8.9,
           preferredField: 'AI & Machine Learning',
+          careerGoal: 'Machine Learning Engineer',
           programmingLanguages: JSON.stringify(['Python', 'C++', 'JavaScript', 'SQL']),
           technicalSkills: JSON.stringify(['PyTorch', 'FastAPI', 'Pandas', 'NumPy', 'Docker', 'Git']),
+          interests: JSON.stringify(['Generative AI', 'Deep Learning', 'Computer Vision']),
           linkedin: 'https://linkedin.com/in/dhruvila',
           github: 'https://github.com/dhruvilaankoliya',
           targetCareerId: 'ml-engineer',
           completenessStage: 6, // Unlocked
           completenessPercent: 100,
           streakDays: 8,
+          availableToHelp: true,
+          studyBuddyEnabled: true,
+          profileVisibility: 'public',
+          showEmail: false,
+          showPhone: false,
+          allowConnectionRequests: true,
         }
       },
       resumeData: {
@@ -168,7 +177,10 @@ Certifications: DeepLearning.AI Deep Learning Specialization, Stanford Online CS
     });
   }
 
-  console.log('✅ Seed completed successfully!');
+  // 2. Seed Demo Students
+  await seedDemoUsers(prisma);
+
+  console.log('✅ Full Seed completed successfully!');
 }
 
 main()
@@ -179,3 +191,4 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
+

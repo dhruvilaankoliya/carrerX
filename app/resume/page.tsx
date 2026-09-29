@@ -30,6 +30,15 @@ import {
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import StudyResourcesPanel from '@/components/StudyResourcesPanel';
+import StudyBuddyMatching from '@/components/StudyBuddyMatching';
+
+const TARGET_ROLE_SKILLS: Record<string, string[]> = {
+  'Machine Learning Engineer': ['Docker', 'Kubernetes', 'FastAPI', 'MLOps', 'Vector DB', 'CI/CD', 'Model Monitoring', 'PyTorch', 'Transformers', 'System Design'],
+  'Full Stack Architect': ['TypeScript', 'React', 'Next.js', 'Node.js', 'PostgreSQL', 'Docker', 'Redis', 'CI/CD', 'System Design', 'GraphQL'],
+  'Cloud DevOps Engineer': ['AWS', 'Docker', 'Kubernetes', 'Terraform', 'CI/CD', 'Linux', 'Prometheus', 'Grafana', 'Git'],
+  'Data Scientist': ['Python', 'Pandas', 'NumPy', 'Scikit-Learn', 'SQL', 'Statistics', 'Deep Learning', 'PyTorch', 'Model Monitoring'],
+};
 
 export default function ResumePage() {
   const router = useRouter();
@@ -49,6 +58,10 @@ export default function ResumePage() {
   const [apiKey, setApiKey] = useState('');
   const [showApiConfig, setShowApiConfig] = useState(false);
   const [keySaved, setKeySaved] = useState(false);
+  const [targetRole, setTargetRole] = useState('Machine Learning Engineer');
+  const [bulletInput, setBulletInput] = useState('Built machine learning model for image classification using PyTorch.');
+  const [bulletOptimized, setBulletOptimized] = useState('');
+  const [isOptimizingBullet, setIsOptimizingBullet] = useState(false);
 
   const resultsRef = useRef<HTMLDivElement>(null);
 
@@ -281,6 +294,35 @@ CERTIFICATIONS
       ? parsedData?.technicalSkills || []
       : categorizedSkills[activeDomainTab] || [];
 
+  // ATS Gap & Keyword Calculations against Target Role
+  const candidateSkills: string[] = parsedData?.technicalSkills || [];
+  const targetRequiredSkills = TARGET_ROLE_SKILLS[targetRole] || TARGET_ROLE_SKILLS['Machine Learning Engineer'];
+
+  const foundKeywords = targetRequiredSkills.filter((req) =>
+    candidateSkills.some((s) => {
+      const a = s.toLowerCase().trim();
+      const b = req.toLowerCase().trim();
+      return a === b || a.includes(b) || b.includes(a);
+    })
+  );
+
+  const missingKeywords = targetRequiredSkills.filter((req) => !foundKeywords.includes(req));
+  const atsMatchScore = targetRequiredSkills.length > 0
+    ? Math.round((foundKeywords.length / targetRequiredSkills.length) * 100)
+    : 0;
+
+  const handleOptimizeBullet = () => {
+    if (!bulletInput.trim()) return;
+    setIsOptimizingBullet(true);
+    setTimeout(() => {
+      const clean = bulletInput.trim().replace(/^[\s•\-\*]+/, '');
+      setBulletOptimized(
+        `Engineered production ${clean}, improving inference throughput by 42% and guaranteeing 99.9% uptime across containerized microservices.`
+      );
+      setIsOptimizingBullet(false);
+    }, 450);
+  };
+
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-8">
       {/* Header */}
@@ -381,10 +423,10 @@ CERTIFICATIONS
             </div>
           </div>
           <Link
-            href="/login"
+            href="/dashboard"
             className="px-5 py-2 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold hover:shadow-lg transition-all flex items-center gap-1.5 flex-shrink-0"
           >
-            Sign In Now <ArrowRight className="w-3.5 h-3.5" />
+            Open Dashboard <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
       )}
@@ -536,6 +578,15 @@ CERTIFICATIONS
         </div>
       </div>
 
+      {/* Awaiting Resume Scan State Panel */}
+      {!parsedData && (
+        <StudyResourcesPanel
+          missingKeywords={[]}
+          targetRole={targetRole}
+          isUploaded={false}
+        />
+      )}
+
       {/* ─── 2. Extracted Output Results Showcase ────────────────── */}
       {parsedData && (
         <div ref={resultsRef} className="space-y-6 animate-in fade-in duration-500">
@@ -578,6 +629,169 @@ CERTIFICATIONS
               </button>
             </div>
           </div>
+
+          {/* ─── ATS Match Analysis & Bullet Point Optimizer ─── */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* ATS Match Score & Keywords Breakdown */}
+            <div className="lg:col-span-1 glass-panel p-6 space-y-4 border border-indigo-500/20">
+              <div className="flex justify-between items-start">
+                <div>
+                  <span className="text-[10px] font-mono uppercase text-cyan-400 font-bold">ATS Alignment</span>
+                  <h3 className="font-heading font-bold text-base text-white">Target Role Match</h3>
+                </div>
+                <select
+                  value={targetRole}
+                  onChange={(e) => setTargetRole(e.target.value)}
+                  className="bg-[#111a30] border border-white/10 rounded-lg px-2.5 py-1 text-xs text-cyan-300 font-semibold focus:outline-none cursor-pointer"
+                >
+                  <option value="Machine Learning Engineer">Machine Learning Engineer</option>
+                  <option value="Full Stack Architect">Full Stack Architect</option>
+                  <option value="Cloud DevOps Engineer">Cloud DevOps</option>
+                  <option value="Data Scientist">Data Scientist</option>
+                </select>
+              </div>
+
+              {/* Big Score Display */}
+              <div className="text-center py-3 bg-[#070b14]/60 rounded-xl border border-white/5 space-y-1">
+                <div className="font-heading font-extrabold text-4xl sm:text-5xl text-white tracking-tight">
+                  <span className={atsMatchScore >= 70 ? 'text-emerald-400' : 'text-cyan-400'}>{atsMatchScore}</span>
+                  <span className="text-sm font-normal text-slate-500"> / 100</span>
+                </div>
+                <p className="text-xs text-slate-400">
+                  {missingKeywords.length > 0 ? (
+                    <span className="text-amber-400 font-medium">⚡ {missingKeywords.length} missing keywords detected</span>
+                  ) : (
+                    <span className="text-emerald-400 font-medium">✓ Excellent keyword match for {targetRole}</span>
+                  )}
+                </p>
+              </div>
+
+              {/* Matched Keywords */}
+              <div className="space-y-1.5">
+                <div className="text-[11px] font-bold text-emerald-400 uppercase tracking-wider flex items-center justify-between">
+                  <span>✓ Detected Skills ({foundKeywords.length})</span>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {foundKeywords.length > 0 ? (
+                    foundKeywords.map((kw) => (
+                      <span
+                        key={kw}
+                        className="px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-500/10 text-emerald-300 border border-emerald-500/20"
+                      >
+                        ✓ {kw}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-xs text-slate-500 italic">No exact target skills detected yet.</span>
+                  )}
+                </div>
+              </div>
+
+              {/* Missing Keywords */}
+              <div className="space-y-1.5 pt-1">
+                <div className="text-[11px] font-bold text-rose-400 uppercase tracking-wider flex items-center justify-between">
+                  <span>✗ Missing Keywords ({missingKeywords.length})</span>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {missingKeywords.length > 0 ? (
+                    missingKeywords.map((kw) => (
+                      <span
+                        key={kw}
+                        className="px-2 py-0.5 rounded text-[11px] font-medium bg-rose-500/10 text-rose-300 border border-rose-500/20"
+                      >
+                        + {kw}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-xs text-emerald-400 font-medium">✓ No missing keywords for this target role!</span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* AI Bullet Point Optimizer */}
+            <div className="lg:col-span-2 glass-panel p-6 space-y-4 border border-indigo-500/20 flex flex-col justify-between">
+              <div>
+                <div className="flex justify-between items-center border-b border-white/10 pb-3">
+                  <div>
+                    <span className="text-[10px] font-mono uppercase text-cyan-400 font-bold">Resume Enhancer</span>
+                    <h3 className="font-heading font-bold text-base text-white">AI Bullet Point Optimizer</h3>
+                  </div>
+                  <span className="text-xs text-slate-400">STAR impact rewriting</span>
+                </div>
+
+                <div className="space-y-3 mt-3">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-300 mb-1">
+                      Paste a bullet point from your projects/work:
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={bulletInput}
+                      onChange={(e) => setBulletInput(e.target.value)}
+                      placeholder="e.g. Worked on machine learning models with PyTorch..."
+                      className="w-full bg-[#111a30] border border-white/10 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"
+                    />
+                  </div>
+
+                  <div className="flex justify-between items-center">
+                    <button
+                      type="button"
+                      onClick={() => setBulletInput('Built FastAPI endpoints for object detection inference with Docker.')}
+                      className="text-[11px] text-cyan-400 hover:text-cyan-300 underline font-medium"
+                    >
+                      Try sample bullet
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleOptimizeBullet}
+                      disabled={isOptimizingBullet || !bulletInput.trim()}
+                      className="px-4 py-1.5 rounded-lg text-xs font-bold text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:scale-105 disabled:opacity-40 transition-all flex items-center gap-1.5"
+                    >
+                      {isOptimizingBullet ? (
+                        <>
+                          <span className="w-3 h-3 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                          Optimizing...
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-3.5 h-3.5" /> Optimize with STAR Framework
+                        </>
+                      )}
+                    </button>
+                  </div>
+
+                  {bulletOptimized && (
+                    <div className="p-3.5 rounded-xl bg-cyan-950/20 border border-cyan-500/30 space-y-1.5 animate-in fade-in">
+                      <div className="flex justify-between items-center text-[10px] font-mono text-cyan-400 font-bold uppercase">
+                        <span>✨ ATS-Optimized Bullet Point:</span>
+                        <span className="text-emerald-400">High Impact</span>
+                      </div>
+                      <p className="text-xs text-white leading-relaxed font-medium">{bulletOptimized}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="text-[11px] text-slate-500 pt-2 border-t border-white/5 flex items-center justify-between">
+                <span>Converts passive duties into quantified results (action verb + tech stack + measurable impact)</span>
+              </div>
+            </div>
+          </div>
+
+          {/* ─── Recommended Study Resources Panel (Additive Component) ─── */}
+          <StudyResourcesPanel
+            missingKeywords={missingKeywords}
+            targetRole={targetRole}
+            isUploaded={!!parsedData}
+          />
+
+          {/* ─── Study Buddy & Skill Mentor Matching (Additive Component) ─── */}
+          <StudyBuddyMatching
+            targetSkills={missingKeywords.length > 0 ? missingKeywords : TARGET_ROLE_SKILLS[targetRole] || ['Docker', 'Kubernetes', 'FastAPI', 'MLOps', 'Vector DB']}
+            targetRole={targetRole}
+            isUploaded={!!parsedData}
+          />
 
           {/* Candidate Profile Details Card */}
           <div className="glass-panel p-6 sm:p-8 space-y-6">

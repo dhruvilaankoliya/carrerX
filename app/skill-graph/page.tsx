@@ -52,14 +52,10 @@ export default function SkillGraphPage() {
 
           const data = buildSkillRelationshipGraph(studentData);
           setGraphData(data);
-        } else {
-          router.push('/login');
         }
-      } else {
-        router.push('/login');
       }
-    } catch {
-      router.push('/login');
+    } catch (e) {
+      console.error('Failed to load skill graph data:', e);
     } finally {
       setLoading(false);
     }

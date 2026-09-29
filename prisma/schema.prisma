@@ -15,42 +15,62 @@ model User {
   passwordHash String
   name         String
   phone        String?
+  isDemo       Boolean   @default(false)
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
-  profile            Profile?
-  resumeData         ResumeData?
-  resumeQuestions    ResumeQuestion[]
+  profile             Profile?
+  resumeData          ResumeData?
+  resumeQuestions     ResumeQuestion[]
   assessmentResponses AssessmentResponse[]
-  learningProfile    LearningProfile?
-  readinessScores    ReadinessScore[]
-  careerMatches      CareerMatch[]
-  roadmaps           Roadmap[]
-  mentorMessages     MentorMessage[]
+  learningProfile     LearningProfile?
+  readinessScores     ReadinessScore[]
+  careerMatches       CareerMatch[]
+  roadmaps            Roadmap[]
+  mentorMessages      MentorMessage[]
+
+  sentConnections     Connection[]   @relation("SentConnections")
+  receivedConnections Connection[]   @relation("ReceivedConnections")
+  sentMessages        Message[]      @relation("SentMessages")
+  receivedMessages    Message[]      @relation("ReceivedMessages")
+  skillMatches        SkillMatch[]
+  notifications       Notification[]
 }
 
 model Profile {
-  id                  String   @id @default(cuid())
-  userId              String   @unique
-  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  college             String
-  course              String
-  branch              String
-  currentYear         Int      @default(1)
-  gradYear            Int      @default(2027)
-  cgpa                Float?
-  preferredField      String?
-  programmingLanguages String  @default("[]") // JSON string of strings
-  technicalSkills     String   @default("[]") // JSON string of strings
-  linkedin            String?
-  github              String?
-  targetCareerId      String   @default("ml-engineer")
-  completenessStage   Int      @default(1) // 1: Profile Created, 2: Resume, 3: Resume Qs, 4: Tech/Apt, 5: Games, 6: Unlocked
-  completenessPercent Int      @default(20)
-  streakDays          Int      @default(1)
-  lastActiveAt        DateTime @default(now())
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  id                   String   @id @default(cuid())
+  userId               String   @unique
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  college              String
+  course               String
+  branch               String
+  currentYear          Int      @default(1)
+  gradYear             Int      @default(2027)
+  cgpa                 Float?
+  preferredField       String?
+  careerGoal           String?
+  profilePhoto         String?
+  programmingLanguages String   @default("[]") // JSON string of strings
+  technicalSkills      String   @default("[]") // JSON string of strings
+  interests            String   @default("[]") // JSON string of strings
+  projects             String   @default("[]") // JSON string of project objects
+  courses              String   @default("[]") // JSON string of course objects
+  certifications       String   @default("[]") // JSON string of certification objects
+  linkedin             String?
+  github               String?
+  targetCareerId       String   @default("ml-engineer")
+  completenessStage    Int      @default(1) // 1: Profile Created, 2: Resume, 3: Resume Qs, 4: Tech/Apt, 5: Games, 6: Unlocked
+  completenessPercent  Int      @default(20)
+  streakDays           Int      @default(1)
+  availableToHelp      Boolean  @default(false)
+  studyBuddyEnabled    Boolean  @default(true)
+  profileVisibility    String   @default("public") // 'public' | 'connections_only'
+  showEmail            Boolean  @default(false)
+  showPhone            Boolean  @default(false)
+  allowConnectionRequests Boolean @default(true)
+  lastActiveAt         DateTime @default(now())
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
 }
 
 model ResumeData {
@@ -163,4 +183,66 @@ model MentorMessage {
   messageText     String
   contextSnapshot String?  // Optional JSON snapshot of user's active gaps at time of message
   createdAt       DateTime @default(now())
+}
+
+model Connection {
+  id          String    @id @default(cuid())
+  senderId    String
+  sender      User      @relation("SentConnections", fields: [senderId], references: [id], onDelete: Cascade)
+  receiverId  String
+  receiver    User      @relation("ReceivedConnections", fields: [receiverId], references: [id], onDelete: Cascade)
+  status      String    @default("pending") // pending | accepted | declined
+  message     String?
+  createdAt   DateTime  @default(now())
+  respondedAt DateTime?
+  messages    Message[]
+
+  @@unique([senderId, receiverId])
+  @@index([senderId])
+  @@index([receiverId])
+}
+
+model Message {
+  id           String      @id @default(cuid())
+  connectionId String?
+  connection   Connection? @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+  senderId     String
+  sender       User        @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiverId   String
+  receiver     User        @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+  body         String
+  createdAt    DateTime    @default(now())
+  readAt       DateTime?
+
+  @@index([senderId])
+  @@index([receiverId])
+  @@index([connectionId])
+}
+
+model SkillMatch {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  matchedUserId   String
+  matchingSkills  String   // JSON string of matching skill names
+  scoreBreakdown  String   // JSON string of { skills, projects, careerGoal, interests }
+  matchPercentage Int
+  computedAt      DateTime @default(now())
+
+  @@index([userId])
+  @@index([matchedUserId])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String   // CONNECTION_REQUEST | CONNECTION_ACCEPTED | NEW_MESSAGE
+  actorId   String
+  actorName String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
 }

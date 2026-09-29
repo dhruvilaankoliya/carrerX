@@ -21,14 +21,10 @@ export default function RoadmapPage() {
         const json = await res.json();
         if (json.authenticated && json.user) {
           setData(json.user);
-        } else {
-          router.push('/login');
         }
-      } else {
-        router.push('/login');
       }
-    } catch {
-      router.push('/login');
+    } catch (e) {
+      console.error('Failed to load roadmap data:', e);
     } finally {
       setLoading(false);
     }

@@ -22,16 +22,12 @@ export default function DashboardPage() {
       const res = await fetch('/api/auth/me');
       if (res.ok) {
         const json = await res.json();
-        if (json.authenticated) {
+        if (json.authenticated && json.user) {
           setData(json.user);
-        } else {
-          router.push('/login');
         }
-      } else {
-        router.push('/login');
       }
-    } catch {
-      router.push('/login');
+    } catch (e) {
+      console.error('Failed to load dashboard data:', e);
     } finally {
       setLoading(false);
     }
