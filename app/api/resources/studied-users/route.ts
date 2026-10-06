@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getStudentsForResource, normalizeResourceTopic } from '@/lib/studentConnectService';
 
 export interface StudiedUser {
   id: string;
@@ -12,260 +13,71 @@ export interface StudiedUser {
   mutualSkills: string[];
   bio: string;
   isOnline: boolean;
+  rating?: number;
+  totalReviews?: number;
+  completionPercent?: number;
+  experienceLevel?: string;
+  matchScore?: number;
 }
 
-const PEER_USERS_POOL: Record<string, StudiedUser[]> = {
-  default: [
-    {
-      id: 'usr_arav_1',
-      name: 'Aarav Sharma',
-      role: 'ML Engineer Intern',
-      companyOrCollege: 'IIT Bombay • AI Lab',
-      avatarColor: 'from-cyan-500 to-blue-600',
-      initials: 'AS',
-      studiedAt: '2 hours ago',
-      status: 'none',
-      mutualSkills: ['Docker', 'PyTorch', 'FastAPI'],
-      bio: 'Working on low-latency LLM inference pipelines & container orchestration.',
-      isOnline: true,
-    },
-    {
-      id: 'usr_priya_2',
-      name: 'Priya Patel',
-      role: 'Associate Data Scientist',
-      companyOrCollege: 'Swiggy ML Platform',
-      avatarColor: 'from-purple-500 to-pink-600',
-      initials: 'PP',
-      studiedAt: 'Yesterday',
-      status: 'none',
-      mutualSkills: ['MLOps', 'Kubernetes', 'Python'],
-      bio: 'Optimizing real-time dispatch models and automated feature store deployments.',
-      isOnline: false,
-    },
-    {
-      id: 'usr_rohit_3',
-      name: 'Rohit Verma',
-      role: 'B.Tech CS Senior',
-      companyOrCollege: 'Dharmsinh Desai University',
-      avatarColor: 'from-emerald-500 to-teal-600',
-      initials: 'RV',
-      studiedAt: '3 days ago',
-      status: 'connected',
-      mutualSkills: ['FastAPI', 'Docker', 'SQL'],
-      bio: 'Targeting Tier-1 AI/ML campus placements. Building full-stack RAG applications.',
-      isOnline: true,
-    },
-    {
-      id: 'usr_neha_4',
-      name: 'Neha Kulkarni',
-      role: 'AI Infrastructure Engineer',
-      companyOrCollege: 'NVIDIA (Inference Team)',
-      avatarColor: 'from-amber-500 to-orange-600',
-      initials: 'NK',
-      studiedAt: '4 days ago',
-      status: 'none',
-      mutualSkills: ['Kubernetes', 'CUDA', 'Docker'],
-      bio: 'Benchmarking TensorRT-LLM and multi-GPU cluster scheduling.',
-      isOnline: false,
-    },
-    {
-      id: 'usr_vikram_5',
-      name: 'Vikram Mehta',
-      role: 'Cloud DevOps Architect',
-      companyOrCollege: 'Microsoft Cloud Solutions',
-      avatarColor: 'from-blue-600 to-indigo-700',
-      initials: 'VM',
-      studiedAt: '5 days ago',
-      status: 'pending',
-      mutualSkills: ['CI/CD', 'Docker', 'Kubernetes'],
-      bio: 'Automating multi-region Kubernetes deployments & GitHub Actions runners.',
-      isOnline: true,
-    },
-    {
-      id: 'usr_ananya_6',
-      name: 'Ananya Gupta',
-      role: 'Generative AI Researcher',
-      companyOrCollege: 'Stanford AI Lab Alum',
-      avatarColor: 'from-fuchsia-500 to-rose-600',
-      initials: 'AG',
-      studiedAt: '1 week ago',
-      status: 'none',
-      mutualSkills: ['Vector DB', 'PyTorch', 'Transformers'],
-      bio: 'Publishing research on dense vector retrieval and multi-hop reasoning.',
-      isOnline: false,
-    },
-    {
-      id: 'usr_karan_7',
-      name: 'Karan Singhal',
-      role: 'Backend & ML Systems Engineer',
-      companyOrCollege: 'Zomato AI Core',
-      avatarColor: 'from-cyan-600 to-teal-700',
-      initials: 'KS',
-      studiedAt: '1 week ago',
-      status: 'none',
-      mutualSkills: ['FastAPI', 'Redis', 'Docker'],
-      bio: 'Building async recommendation microservices handling 50k+ QPS.',
-      isOnline: true,
-    },
-  ],
-  docker: [
-    {
-      id: 'usr_arav_1',
-      name: 'Aarav Sharma',
-      role: 'ML Engineer Intern',
-      companyOrCollege: 'IIT Bombay • AI Lab',
-      avatarColor: 'from-cyan-500 to-blue-600',
-      initials: 'AS',
-      studiedAt: '2 hours ago',
-      status: 'none',
-      mutualSkills: ['Docker', 'PyTorch', 'FastAPI'],
-      bio: 'Containerized PyTorch inference with multi-stage Docker builds.',
-      isOnline: true,
-    },
-    {
-      id: 'usr_vikram_5',
-      name: 'Vikram Mehta',
-      role: 'Cloud DevOps Architect',
-      companyOrCollege: 'Microsoft Cloud Solutions',
-      avatarColor: 'from-blue-600 to-indigo-700',
-      initials: 'VM',
-      studiedAt: '1 day ago',
-      status: 'pending',
-      mutualSkills: ['Docker', 'CI/CD', 'Kubernetes'],
-      bio: 'Mastered production Docker multi-architecture builds for ARM & x86.',
-      isOnline: true,
-    },
-    {
-      id: 'usr_rohit_3',
-      name: 'Rohit Verma',
-      role: 'B.Tech CS Senior',
-      companyOrCollege: 'Dharmsinh Desai University',
-      avatarColor: 'from-emerald-500 to-teal-600',
-      initials: 'RV',
-      studiedAt: '3 days ago',
-      status: 'connected',
-      mutualSkills: ['FastAPI', 'Docker', 'SQL'],
-      bio: 'Dockerized microservice deployment for university capstone project.',
-      isOnline: true,
-    },
-    {
-      id: 'usr_neha_4',
-      name: 'Neha Kulkarni',
-      role: 'AI Infrastructure Engineer',
-      companyOrCollege: 'NVIDIA (Inference Team)',
-      avatarColor: 'from-amber-500 to-orange-600',
-      initials: 'NK',
-      studiedAt: '5 days ago',
-      status: 'none',
-      mutualSkills: ['Docker', 'CUDA', 'Kubernetes'],
-      bio: 'Benchmarking GPU passthrough containers with NVIDIA Container Toolkit.',
-      isOnline: false,
-    },
-  ],
-  fastapi: [
-    {
-      id: 'usr_karan_7',
-      name: 'Karan Singhal',
-      role: 'Backend & ML Systems Engineer',
-      companyOrCollege: 'Zomato AI Core',
-      avatarColor: 'from-cyan-600 to-teal-700',
-      initials: 'KS',
-      studiedAt: '1 hour ago',
-      status: 'none',
-      mutualSkills: ['FastAPI', 'Redis', 'Python'],
-      bio: 'Serving async PyTorch embeddings via FastAPI with Pydantic v2 schemas.',
-      isOnline: true,
-    },
-    {
-      id: 'usr_arav_1',
-      name: 'Aarav Sharma',
-      role: 'ML Engineer Intern',
-      companyOrCollege: 'IIT Bombay • AI Lab',
-      avatarColor: 'from-cyan-500 to-blue-600',
-      initials: 'AS',
-      studiedAt: 'Yesterday',
-      status: 'none',
-      mutualSkills: ['FastAPI', 'PyTorch', 'Docker'],
-      bio: 'Built streaming Server-Sent Events (SSE) FastAPI endpoints for LLM chat.',
-      isOnline: true,
-    },
-    {
-      id: 'usr_rohit_3',
-      name: 'Rohit Verma',
-      role: 'B.Tech CS Senior',
-      companyOrCollege: 'Dharmsinh Desai University',
-      avatarColor: 'from-emerald-500 to-teal-600',
-      initials: 'RV',
-      studiedAt: '4 days ago',
-      status: 'connected',
-      mutualSkills: ['FastAPI', 'Docker', 'SQL'],
-      bio: 'Created high-speed RESTful authentication & rate limiting middleware.',
-      isOnline: true,
-    },
-  ],
-  k8s: [
-    {
-      id: 'usr_vikram_5',
-      name: 'Vikram Mehta',
-      role: 'Cloud DevOps Architect',
-      companyOrCollege: 'Microsoft Cloud Solutions',
-      avatarColor: 'from-blue-600 to-indigo-700',
-      initials: 'VM',
-      studiedAt: '3 hours ago',
-      status: 'pending',
-      mutualSkills: ['Kubernetes', 'Docker', 'Helm'],
-      bio: 'Architected automated Horizontal Pod Autoscaling (HPA) for GPU clusters.',
-      isOnline: true,
-    },
-    {
-      id: 'usr_neha_4',
-      name: 'Neha Kulkarni',
-      role: 'AI Infrastructure Engineer',
-      companyOrCollege: 'NVIDIA (Inference Team)',
-      avatarColor: 'from-amber-500 to-orange-600',
-      initials: 'NK',
-      studiedAt: 'Yesterday',
-      status: 'none',
-      mutualSkills: ['Kubernetes', 'KServe', 'Ray'],
-      bio: 'Deploying KServe and Ray Operator on multi-node Kubernetes clusters.',
-      isOnline: false,
-    },
-    {
-      id: 'usr_priya_2',
-      name: 'Priya Patel',
-      role: 'Associate Data Scientist',
-      companyOrCollege: 'Swiggy ML Platform',
-      avatarColor: 'from-purple-500 to-pink-600',
-      initials: 'PP',
-      studiedAt: '2 days ago',
-      status: 'none',
-      mutualSkills: ['Kubernetes', 'MLOps', 'Python'],
-      bio: 'Configured zero-downtime model rollouts using Istio service mesh on K8s.',
-      isOnline: true,
-    },
-  ],
-};
-
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const resourceId = (searchParams.get('resourceId') || '').toLowerCase();
-  const skillName = (searchParams.get('skillName') || '').toLowerCase();
+  try {
+    const { searchParams } = new URL(req.url);
+    const resourceId = searchParams.get('resourceId') || '';
+    const skillName = searchParams.get('skillName') || '';
+    const search = searchParams.get('search') || '';
+    const college = searchParams.get('college') || 'all';
+    const course = searchParams.get('course') || 'all';
+    const year = searchParams.get('year') || 'all';
+    const experienceLevel = searchParams.get('experienceLevel') || 'all';
+    const minRating = parseFloat(searchParams.get('minRating') || '0');
+    const minProgress = parseInt(searchParams.get('minProgress') || '0', 10);
+    const sortBy = (searchParams.get('sortBy') || 'relevant') as any;
 
-  let pool: StudiedUser[] = PEER_USERS_POOL.default;
+    const result = getStudentsForResource({
+      resourceId,
+      skillName,
+      search,
+      college,
+      course,
+      year,
+      experienceLevel,
+      minRating: isNaN(minRating) ? 0 : minRating,
+      minProgress: isNaN(minProgress) ? 0 : minProgress,
+      sortBy,
+    });
 
-  if (resourceId.includes('docker') || skillName.includes('docker')) {
-    pool = PEER_USERS_POOL.docker || PEER_USERS_POOL.default;
-  } else if (resourceId.includes('fastapi') || skillName.includes('fastapi')) {
-    pool = PEER_USERS_POOL.fastapi || PEER_USERS_POOL.default;
-  } else if (resourceId.includes('k8s') || resourceId.includes('kubern') || skillName.includes('kubern')) {
-    pool = PEER_USERS_POOL.k8s || PEER_USERS_POOL.default;
+    const legacyUsers: StudiedUser[] = result.students.map((s) => ({
+      id: s.id,
+      name: s.name,
+      role: s.careerGoal,
+      companyOrCollege: `${s.college} • ${s.course}`,
+      avatarColor: s.avatarColor,
+      initials: s.initials,
+      studiedAt: s.lastActiveAt,
+      status: 'none',
+      mutualSkills: s.technicalSkills.slice(0, 4),
+      bio: s.bio,
+      isOnline: s.isOnline,
+      rating: s.ratingsSummary.averageRating,
+      totalReviews: s.ratingsSummary.totalReviews,
+      completionPercent: s.completionPercent,
+      experienceLevel: s.experienceLevel,
+      matchScore: s.matchScore,
+    }));
+
+    return NextResponse.json({
+      success: true,
+      resourceTopic: result.resourceTopic,
+      totalCount: result.totalStudents,
+      students: result.students,
+      users: legacyUsers,
+    });
+  } catch (error: any) {
+    console.error('Studied users GET error:', error);
+    return NextResponse.json(
+      { success: false, error: error.message || 'Failed to fetch students' },
+      { status: 500 }
+    );
   }
-
-  return NextResponse.json({
-    success: true,
-    resourceId,
-    skillName,
-    totalStudied: pool.length,
-    users: pool,
-  });
 }

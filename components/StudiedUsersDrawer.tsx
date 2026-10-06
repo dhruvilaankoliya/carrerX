@@ -216,7 +216,7 @@ export default function StudiedUsersDrawer({
         u.name.toLowerCase().includes(q) ||
         u.role.toLowerCase().includes(q) ||
         u.companyOrCollege.toLowerCase().includes(q) ||
-        u.mutualSkills.some((s) => s.toLowerCase().includes(q))
+        (u.mutualSkills || []).some((s: string) => s.toLowerCase().includes(q))
     );
   }, [users, searchQuery]);
 
@@ -372,7 +372,7 @@ export default function StudiedUsersDrawer({
                   <div className="flex items-center justify-between text-[11px] text-slate-400 pt-1 border-t border-white/5">
                     <div className="flex items-center gap-1 flex-wrap">
                       <span className="text-slate-500">Skills:</span>
-                      {user.mutualSkills.map((s) => (
+                      {(user.mutualSkills || []).map((s: string) => (
                         <span
                           key={s}
                           className="px-1.5 py-0.2 rounded bg-white/5 border border-white/10 text-slate-300 text-[10px]"

@@ -16,7 +16,11 @@ import {
   Users,
   Sparkles,
   Zap,
+  MessageSquare,
+  UserPlus,
+  Star,
 } from 'lucide-react';
+import StudentConnectModal from './StudentConnectModal';
 
 export interface StudyResource {
   id: string;
@@ -152,7 +156,7 @@ const BASE_RESOURCES_DB: StudyResource[] = [
     resource_type: 'course',
     provider: 'KodeKloud',
     duration: '4 hrs',
-    usage_count: 690,
+    usage_count: 693,
   },
 
   // FastAPI
@@ -314,6 +318,84 @@ const BASE_RESOURCES_DB: StudyResource[] = [
     duration: '3 hrs',
     usage_count: 460,
   },
+
+  // PyTorch
+  {
+    id: 'res_pytorch_1',
+    skill_name: 'PyTorch',
+    resource_title: 'PyTorch Official 60-Minute Blitz & Tensors Deep Dive',
+    resource_url: 'https://pytorch.org/tutorials/beginner/deep_learning_60min_blitz.html',
+    resource_type: 'doc',
+    provider: 'PyTorch Official',
+    duration: '1 hr',
+    usage_count: 820,
+  },
+  {
+    id: 'res_pytorch_2',
+    skill_name: 'PyTorch',
+    resource_title: 'Deep Learning with PyTorch: Zero to GANs',
+    resource_url: 'https://www.youtube.com/watch?v=GIsg-ZUy0MY',
+    resource_type: 'video',
+    provider: 'freeCodeCamp',
+    duration: '3.5 hrs',
+    usage_count: 650,
+  },
+
+  // Transformers
+  {
+    id: 'res_transformers_1',
+    skill_name: 'Transformers',
+    resource_title: 'HuggingFace Transformers Course: LLMs, Fine-Tuning & Quantization',
+    resource_url: 'https://huggingface.co/learn/nlp-course/chapter1/1',
+    resource_type: 'course',
+    provider: 'HuggingFace Official',
+    duration: '5 hrs',
+    usage_count: 910,
+  },
+  {
+    id: 'res_transformers_2',
+    skill_name: 'Transformers',
+    resource_title: 'Illustrated Guide to Transformers and Attention Mechanisms',
+    resource_url: 'https://jalammar.github.io/illustrated-transformer/',
+    resource_type: 'article',
+    provider: 'Jay Alammar',
+    duration: '45 mins',
+    usage_count: 730,
+  },
+
+  // System Design
+  {
+    id: 'res_sysdesign_1',
+    skill_name: 'System Design',
+    resource_title: 'System Design Primer for Large Scale Distributed Workloads',
+    resource_url: 'https://github.com/donnemartin/system-design-primer',
+    resource_type: 'doc',
+    provider: 'GitHub Open Source',
+    duration: '4 hrs',
+    usage_count: 890,
+  },
+  {
+    id: 'res_sysdesign_2',
+    skill_name: 'System Design',
+    resource_title: 'Designing High-Throughput Machine Learning Systems',
+    resource_url: 'https://chiphuyen.com/book-ml-systems-design/',
+    resource_type: 'article',
+    provider: 'Chip Huyen (Stanford)',
+    duration: '2.5 hrs',
+    usage_count: 610,
+  },
+
+  // SQL
+  {
+    id: 'res_sql_1',
+    skill_name: 'SQL',
+    resource_title: 'Advanced SQL Query Optimization & Window Functions',
+    resource_url: 'https://mode.com/sql-tutorial/',
+    resource_type: 'doc',
+    provider: 'Mode Analytics',
+    duration: '2 hrs',
+    usage_count: 780,
+  },
 ];
 
 interface Props {
@@ -327,10 +409,18 @@ export default function StudyResourcesPanel({
   targetRole = 'Machine Learning Engineer',
   isUploaded = true,
 }: Props) {
-  const [resources, setResources] = useState<StudyResource[]>([]);
   const [studiedMap, setStudiedMap] = useState<Record<string, boolean>>({});
   const [usageMap, setUsageMap] = useState<Record<string, number>>({});
   const [isCollapsed, setIsCollapsed] = useState(false);
+
+  // Student Connect Modal active state
+  const [connectModalData, setConnectModalData] = useState<{
+    isOpen: boolean;
+    resourceTitle: string;
+    resourceId: string;
+    skillName: string;
+    usageCount: number;
+  } | null>(null);
 
   // Initialize and load saved state from localStorage / backend
   useEffect(() => {
@@ -480,6 +570,16 @@ export default function StudyResourcesPanel({
     }
   };
 
+  const handleOpenStudentConnect = (res: StudyResource, skill: string) => {
+    setConnectModalData({
+      isOpen: true,
+      resourceTitle: res.resource_title,
+      resourceId: res.id,
+      skillName: skill,
+      usageCount: res.usage_count,
+    });
+  };
+
   const renderTypeBadge = (type: StudyResource['resource_type']) => {
     switch (type) {
       case 'doc':
@@ -536,7 +636,7 @@ export default function StudyResourcesPanel({
           </div>
           <h4 className="text-sm font-bold text-white">No Skill Gaps Detected Yet</h4>
           <p className="text-xs text-slate-400 max-w-md mx-auto leading-relaxed">
-            Upload your resume or paste skills above to automatically identify missing keywords and unlock curated study roadmaps with community popularity stats.
+            Upload your resume or paste skills above to automatically identify missing keywords, connect with students who mastered them, and unlock curated study roadmaps.
           </p>
         </div>
       </div>
@@ -567,180 +667,204 @@ export default function StudyResourcesPanel({
 
   // 3. Render Curated Missing Keywords Resources Panel
   return (
-    <div className="rounded-2xl bg-[#0b1222]/80 border border-indigo-500/20 p-5 sm:p-6 space-y-5 transition-all">
-      {/* Panel Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 flex-shrink-0">
-            <BookOpen className="w-5 h-5" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h3 className="font-heading font-bold text-base sm:text-lg text-white">
-                Recommended Study Resources
-              </h3>
-              <span className="px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-300 text-[11px] font-bold border border-rose-500/20">
-                {missingKeywords.length} Gaps
-              </span>
+    <>
+      <div className="rounded-2xl bg-[#0b1222]/80 border border-indigo-500/20 p-5 sm:p-6 space-y-5 transition-all">
+        {/* Panel Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 flex-shrink-0">
+              <BookOpen className="w-5 h-5" />
             </div>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Curated learning paths to bridge detected ATS gaps for <strong className="text-cyan-300">{targetRole}</strong>
-            </p>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="font-heading font-bold text-base sm:text-lg text-white">
+                  Recommended Study Resources
+                </h3>
+                <span className="px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-300 text-[11px] font-bold border border-rose-500/20">
+                  {missingKeywords.length} Gaps
+                </span>
+              </div>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Curated learning paths & peer networks to bridge detected ATS gaps for <strong className="text-cyan-300">{targetRole}</strong>
+              </p>
+            </div>
           </div>
+
+          {/* Collapse / Expand Toggle Button */}
+          <button
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition-all flex items-center gap-1.5 self-start sm:self-center"
+          >
+            <span>{isCollapsed ? 'Expand View' : 'Collapse'}</span>
+            {isCollapsed ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronUp className="w-3.5 h-3.5" />}
+          </button>
         </div>
 
-        {/* Collapse / Expand Toggle Button for Clean UI */}
-        <button
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition-all flex items-center gap-1.5 self-start sm:self-center"
-        >
-          <span>{isCollapsed ? 'Expand View' : 'Collapse'}</span>
-          {isCollapsed ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronUp className="w-3.5 h-3.5" />}
-        </button>
-      </div>
+        {/* Panel Body */}
+        {!isCollapsed && (
+          <div className="space-y-4 animate-in fade-in duration-300">
+            {missingKeywords.map((skill) => {
+              const meta = getMetadata(skill);
+              const skillResources = getCuratedResources(skill);
 
-      {/* Panel Body */}
-      {!isCollapsed && (
-        <div className="space-y-4 animate-in fade-in duration-300">
-          {missingKeywords.map((skill) => {
-            const meta = getMetadata(skill);
-            const skillResources = getCuratedResources(skill);
+              return (
+                <div
+                  key={skill}
+                  className="rounded-xl bg-[#070b14]/90 border border-white/10 p-4 sm:p-5 space-y-3.5 hover:border-cyan-500/30 transition-all"
+                >
+                  {/* Skill Header */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-bold text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20">
+                        GAP
+                      </span>
+                      <h4 className="font-heading font-bold text-sm sm:text-base text-white flex items-center gap-1.5">
+                        {skill}
+                      </h4>
+                    </div>
 
-            return (
-              <div
-                key={skill}
-                className="rounded-xl bg-[#070b14]/90 border border-white/10 p-4 sm:p-5 space-y-3.5 hover:border-cyan-500/30 transition-all"
-              >
-                {/* Skill Header */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20">
-                      GAP
-                    </span>
-                    <h4 className="font-heading font-bold text-sm sm:text-base text-white flex items-center gap-1.5">
-                      {skill}
-                    </h4>
+                    <div className="flex items-center gap-2 text-xs text-slate-400">
+                      <span className="inline-flex items-center gap-1 bg-white/5 px-2 py-0.5 rounded border border-white/10 text-amber-300 font-mono text-[11px]">
+                        <Clock className="w-3 h-3 text-amber-400" /> {meta.timeEst}
+                      </span>
+                    </div>
                   </div>
 
-                  <div className="flex items-center gap-2 text-xs text-slate-400">
-                    <span className="inline-flex items-center gap-1 bg-white/5 px-2 py-0.5 rounded border border-white/10 text-amber-300 font-mono text-[11px]">
-                      <Clock className="w-3 h-3 text-amber-400" /> {meta.timeEst}
-                    </span>
-                  </div>
-                </div>
+                  {/* Role Context */}
+                  <p className="text-xs text-slate-300 leading-relaxed bg-[#111a30]/50 p-2.5 rounded-lg border border-white/5">
+                    <span className="text-cyan-400 font-semibold">Why this matters: </span>
+                    {meta.roleContext}
+                  </p>
 
-                {/* Role Context */}
-                <p className="text-xs text-slate-300 leading-relaxed bg-[#111a30]/50 p-2.5 rounded-lg border border-white/5">
-                  <span className="text-cyan-400 font-semibold">Why this matters: </span>
-                  {meta.roleContext}
-                </p>
+                  {/* Curated References List */}
+                  <div className="space-y-2 pt-1">
+                    {skillResources.map((res, idx) => {
+                      const isTopPopular = idx === 0;
+                      const isStudied = !!studiedMap[res.id];
 
-                {/* Curated References List */}
-                <div className="space-y-2 pt-1">
-                  {skillResources.map((res, idx) => {
-                    const isTopPopular = idx === 0;
-                    const isStudied = !!studiedMap[res.id];
+                      return (
+                        <div
+                          key={res.id}
+                          className={`rounded-lg p-3 flex flex-col md:flex-row md:items-center justify-between gap-3 border transition-all ${
+                            isStudied
+                              ? 'bg-emerald-950/20 border-emerald-500/30'
+                              : 'bg-[#111a30]/60 border-white/5 hover:border-white/15'
+                          }`}
+                        >
+                          {/* Left Resource Details */}
+                          <div className="flex items-start sm:items-center gap-2.5 flex-1 min-w-0">
+                            {renderTypeBadge(res.resource_type)}
 
-                    return (
-                      <div
-                        key={res.id}
-                        className={`rounded-lg p-3 flex flex-col md:flex-row md:items-center justify-between gap-3 border transition-all ${
-                          isStudied
-                            ? 'bg-emerald-950/20 border-emerald-500/30'
-                            : 'bg-[#111a30]/60 border-white/5 hover:border-white/15'
-                        }`}
-                      >
-                        {/* Left Resource Details */}
-                        <div className="flex items-start sm:items-center gap-2.5 flex-1 min-w-0">
-                          {renderTypeBadge(res.resource_type)}
+                            <div className="min-w-0 flex-1">
+                              <div className="flex flex-wrap items-center gap-1.5">
+                                <a
+                                  href={res.resource_url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  onClick={() => recordUsage(res.id, 'open')}
+                                  className="text-xs font-semibold text-white hover:text-cyan-300 transition-colors inline-flex items-center gap-1 group truncate"
+                                >
+                                  <span className="truncate">{res.resource_title}</span>
+                                  <ExternalLink className="w-3 h-3 text-slate-500 group-hover:text-cyan-400 flex-shrink-0" />
+                                </a>
 
-                          <div className="min-w-0 flex-1">
-                            <div className="flex flex-wrap items-center gap-1.5">
+                                {isTopPopular && (
+                                  <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold bg-gradient-to-r from-amber-500/20 to-rose-500/20 text-amber-300 border border-amber-500/30">
+                                    <Flame className="w-2.5 h-2.5 text-amber-400" /> Most Popular
+                                  </span>
+                                )}
+                              </div>
+
+                              <div className="flex items-center gap-2 text-[11px] text-slate-400 mt-0.5">
+                                <span className="text-slate-300 font-medium">{res.provider}</span>
+                                <span>•</span>
+                                <span>{res.duration}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Right: Interactive Social Proof & Action Buttons */}
+                          <div className="flex items-center justify-between md:justify-end gap-2.5 flex-shrink-0 pt-1 md:pt-0 border-t md:border-t-0 border-white/5">
+                            {/* Interactive "Studied by X students" clickable badge */}
+                            <button
+                              type="button"
+                              onClick={() => handleOpenStudentConnect(res, skill)}
+                              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#070b14] hover:bg-cyan-950/40 border border-white/10 hover:border-cyan-500/40 text-[11px] text-slate-300 hover:text-white transition-all cursor-pointer group shadow-sm"
+                              title={`Click to view the ${res.usage_count} students who studied ${skill}`}
+                            >
+                              <div className="flex -space-x-1 items-center">
+                                <div className="w-3.5 h-3.5 rounded-full bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-[8px] text-white font-bold group-hover:scale-110 transition-transform">
+                                  U
+                                </div>
+                                <div className="w-3.5 h-3.5 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center text-[8px] text-white font-bold group-hover:scale-110 transition-transform">
+                                  +
+                                </div>
+                              </div>
+                              <span>
+                                👥 Studied by <strong className="text-cyan-300 font-mono group-hover:underline">{res.usage_count}</strong> students
+                              </span>
+                            </button>
+
+                            {/* Action Buttons: [Open] [Mark Studied] [Find Students] */}
+                            <div className="flex items-center gap-1.5">
                               <a
                                 href={res.resource_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 onClick={() => recordUsage(res.id, 'open')}
-                                className="text-xs font-semibold text-white hover:text-cyan-300 transition-colors inline-flex items-center gap-1 group truncate"
+                                className="px-2.5 py-1 rounded-md text-[11px] font-medium bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition-all inline-flex items-center gap-1"
                               >
-                                <span className="truncate">{res.resource_title}</span>
-                                <ExternalLink className="w-3 h-3 text-slate-500 group-hover:text-cyan-400 flex-shrink-0" />
+                                Open <ExternalLink className="w-2.5 h-2.5" />
                               </a>
 
-                              {isTopPopular && (
-                                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold bg-gradient-to-r from-amber-500/20 to-rose-500/20 text-amber-300 border border-amber-500/30">
-                                  <Flame className="w-2.5 h-2.5 text-amber-400" /> Most Popular
-                                </span>
-                              )}
-                            </div>
+                              <button
+                                onClick={() => toggleStudied(res.id)}
+                                className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-all flex items-center gap-1 ${
+                                  isStudied
+                                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                                    : 'bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/30'
+                                }`}
+                              >
+                                {isStudied ? (
+                                  <>
+                                    <CheckCircle2 className="w-3 h-3 text-emerald-400" /> Done
+                                  </>
+                                ) : (
+                                  'Mark Studied'
+                                )}
+                              </button>
 
-                            <div className="flex items-center gap-2 text-[11px] text-slate-400 mt-0.5">
-                              <span className="text-slate-300 font-medium">{res.provider}</span>
-                              <span>•</span>
-                              <span>{res.duration}</span>
+                              {/* Prominent "Find Students" Button */}
+                              <button
+                                onClick={() => handleOpenStudentConnect(res, skill)}
+                                className="px-2.5 py-1 rounded-md text-[11px] font-bold text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 hover:scale-105 active:scale-95 transition-all flex items-center gap-1 shadow-sm"
+                              >
+                                <Users className="w-3 h-3" /> Find Students
+                              </button>
                             </div>
                           </div>
                         </div>
-
-                        {/* Right: Social Proof & Action Button */}
-                        <div className="flex items-center justify-between md:justify-end gap-2.5 flex-shrink-0 pt-1 md:pt-0 border-t md:border-t-0 border-white/5">
-                          {/* Social Proof Indicator */}
-                          <div
-                            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#070b14] border border-white/10 text-[11px] text-slate-300"
-                            title={`${res.usage_count} users have studied or opened this resource`}
-                          >
-                            <div className="flex -space-x-1 items-center">
-                              <div className="w-3.5 h-3.5 rounded-full bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-[8px] text-white font-bold">
-                                U
-                              </div>
-                              <div className="w-3.5 h-3.5 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center text-[8px] text-white font-bold">
-                                +
-                              </div>
-                            </div>
-                            <span>
-                              Studied by <strong className="text-cyan-300 font-mono">{res.usage_count}</strong> users
-                            </span>
-                          </div>
-
-                          {/* Mark as Studied / Open Resource Buttons */}
-                          <div className="flex items-center gap-1.5">
-                            <a
-                              href={res.resource_url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              onClick={() => recordUsage(res.id, 'open')}
-                              className="px-2.5 py-1 rounded-md text-[11px] font-medium bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition-all inline-flex items-center gap-1"
-                            >
-                              Open <ExternalLink className="w-2.5 h-2.5" />
-                            </a>
-
-                            <button
-                              onClick={() => toggleStudied(res.id)}
-                              className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-all flex items-center gap-1 ${
-                                isStudied
-                                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                                  : 'bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/30'
-                              }`}
-                            >
-                              {isStudied ? (
-                                <>
-                                  <CheckCircle2 className="w-3 h-3 text-emerald-400" /> Done
-                                </>
-                              ) : (
-                                'Mark Studied'
-                              )}
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* ─── Dedicated Student Connect & Peer Learning Hub Modal ─── */}
+      {connectModalData && (
+        <StudentConnectModal
+          isOpen={connectModalData.isOpen}
+          onClose={() => setConnectModalData(null)}
+          resourceTitle={connectModalData.resourceTitle}
+          resourceId={connectModalData.resourceId}
+          skillName={connectModalData.skillName}
+          usageCount={connectModalData.usageCount}
+        />
       )}
-    </div>
+    </>
   );
 }
