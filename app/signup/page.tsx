@@ -18,6 +18,7 @@ export default function SignupPage() {
     // Step 1: Personal
     name: '',
     email: '',
+    role: 'user', // 'user' | 'manager'
     phone: '',
     password: '',
     confirmPassword: '',
@@ -113,6 +114,7 @@ export default function SignupPage() {
       const payload = {
         name: formData.name,
         email: formData.email,
+        role: formData.role || 'user',
         phone: formData.phone,
         password: formData.password,
         college: formData.college,
@@ -138,7 +140,8 @@ export default function SignupPage() {
 
       if (res.ok) {
         localStorage.removeItem(DRAFT_KEY);
-        router.push('/dashboard');
+        const destination = data.redirectTo || (formData.role === 'manager' ? '/manager' : '/resume');
+        router.push(destination);
         router.refresh();
       } else {
         setError(data.error || 'Failed to create account');
@@ -220,6 +223,41 @@ export default function SignupPage() {
         {/* ─── Step 1: Personal Details ───────────────────────── */}
         {step === 1 && (
           <div className="space-y-4 animate-in fade-in duration-300">
+            {/* Role Selection */}
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Account Role *</label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => updateField('role', 'user')}
+                  className={`p-3 rounded-xl border text-left transition-all ${
+                    formData.role === 'user'
+                      ? 'bg-cyan-500/20 border-cyan-400 text-white shadow-[0_0_15px_rgba(6,182,212,0.2)]'
+                      : 'bg-[#111a30] border-white/10 text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <div className="font-heading font-bold text-xs flex items-center gap-1.5">
+                    <User className="w-3.5 h-3.5 text-cyan-400" /> Student / User
+                  </div>
+                  <div className="text-[10px] text-slate-400 mt-0.5">Track ATS gaps, study resources & match peers</div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => updateField('role', 'manager')}
+                  className={`p-3 rounded-xl border text-left transition-all ${
+                    formData.role === 'manager'
+                      ? 'bg-purple-500/20 border-purple-400 text-white shadow-[0_0_15px_rgba(168,85,247,0.2)]'
+                      : 'bg-[#111a30] border-white/10 text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <div className="font-heading font-bold text-xs flex items-center gap-1.5">
+                    <ShieldCheck className="w-3.5 h-3.5 text-purple-400" /> Manager / Admin
+                  </div>
+                  <div className="text-[10px] text-slate-400 mt-0.5">Admin dashboard, live analytics & feedback feed</div>
+                </button>
+              </div>
+            </div>
+
             <div>
               <label className="block text-xs font-semibold text-slate-300 mb-1.5">Full Name *</label>
               <input

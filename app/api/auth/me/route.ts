@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getCurrentUser } from '@/lib/auth';
+import { getCurrentUser, isUserOnline } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,6 +19,10 @@ export async function GET() {
         name: user.name,
         email: user.email,
         phone: user.phone,
+        role: user.role || 'user',
+        isOnline: isUserOnline(user),
+        lastLoginAt: user.lastLoginAt,
+        lastSeenAt: user.lastSeenAt,
         profile,
         resumeData: user.resumeData ? {
           fileName: user.resumeData.fileName,

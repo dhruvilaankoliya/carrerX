@@ -15,7 +15,11 @@ model User {
   passwordHash String
   name         String
   phone        String?
+  role         String    @default("user") // "user" | "manager"
   isDemo       Boolean   @default(false)
+  lastLoginAt  DateTime?
+  lastSeenAt   DateTime?
+  isOnline     Boolean   @default(false)
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
@@ -35,6 +39,10 @@ model User {
   receivedMessages    Message[]      @relation("ReceivedMessages")
   skillMatches        SkillMatch[]
   notifications       Notification[]
+
+  studyProgresses     StudyProgress[]
+  feedbacks           Feedback[]
+  loginLogs           LoginLog[]
 }
 
 model Profile {
@@ -243,6 +251,76 @@ model Notification {
   message   String
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model Skill {
+  id             String     @id @default(cuid())
+  name           String     @unique
+  whyItMatters   String?
+  estimatedHours String?
+  resources      Resource[]
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+}
+
+model Resource {
+  id              String          @id
+  skillId         String
+  skill           Skill           @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  title           String
+  type            String          // course | doc | article | video
+  provider        String
+  durationHrs     Float           @default(1.0)
+  durationText    String?
+  url             String
+  badge           String?         // e.g. "Most Popular"
+  studyProgresses StudyProgress[]
+  feedbacks       Feedback[]
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@index([skillId])
+}
+
+model StudyProgress {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resourceId String
+  resource   Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  studiedAt  DateTime @default(now())
+
+  @@unique([userId, resourceId])
+  @@index([userId])
+  @@index([resourceId])
+}
+
+model Feedback {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resourceId String
+  resource   Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  rating     Int      // 1 to 5
+  comment    String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([userId, resourceId])
+  @@index([userId])
+  @@index([resourceId])
+}
+
+model LoginLog {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  loginAt   DateTime  @default(now())
+  logoutAt  DateTime?
+  ipAddress String?
+  userAgent String?
 
   @@index([userId])
 }

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import FloatingMentor from '@/components/FloatingMentor';
+import PresenceHeartbeat from '@/components/PresenceHeartbeat';
 
 export const metadata: Metadata = {
   title: 'CareerX — AI-Powered Student Career Intelligence Platform',
@@ -28,6 +29,7 @@ export default function RootLayout({
         <Navbar />
         <main className="pt-20 min-h-[calc(100vh-80px)]">{children}</main>
         <FloatingMentor />
+        <PresenceHeartbeat />
         <div id="toast-root" className="fixed top-24 right-6 z-50 flex flex-col gap-2 pointer-events-none" />
       </body>
     </html>

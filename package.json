@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "db:push": "prisma db push",
-    "db:seed": "node --loader ts-node/esm prisma/seed.ts || ts-node prisma/seed.ts || npx tsx prisma/seed.ts"
+    "db:seed": "node --loader ts-node/esm prisma/seed.ts || ts-node prisma/seed.ts || npx tsx prisma/seed.ts",
+    "test": "npx tsx scripts/test-endpoints.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.19.1",
@@ -23,7 +24,8 @@
     "pdf-parse": "^1.1.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "tailwind-merge": "^2.5.2"
+    "tailwind-merge": "^2.5.2",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

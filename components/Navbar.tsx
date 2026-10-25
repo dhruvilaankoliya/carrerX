@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Compass, Network, Map, FileText, CheckCircle2, Bot, LogOut, Menu, X, Sparkles, User as UserIcon } from 'lucide-react';
+import { Compass, Network, Map, FileText, CheckCircle2, Bot, LogOut, Menu, X, Sparkles, User as UserIcon, ShieldCheck } from 'lucide-react';
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -66,7 +66,7 @@ export default function Navbar() {
     router.refresh();
   };
 
-  const navLinks = [
+  const baseNavLinks = [
     { href: '/dashboard', label: 'Dashboard', icon: Compass },
     { href: '/skill-graph', label: 'Skill Graph', icon: Network },
     { href: '/roadmap', label: 'Roadmap', icon: Map },
@@ -75,6 +75,10 @@ export default function Navbar() {
     { href: '/assessment', label: 'Assessment', icon: CheckCircle2 },
     { href: '/mentor', label: 'AI Mentor', icon: Bot },
   ];
+
+  const navLinks = user?.role === 'manager'
+    ? [{ href: '/manager', label: 'Manager Hub', icon: ShieldCheck }, ...baseNavLinks]
+    : baseNavLinks;
 
   return (
     <nav
@@ -101,7 +105,7 @@ export default function Navbar() {
         {/* Desktop Nav Links */}
         <div className="hidden lg:flex items-center gap-1 bg-[#0b1222]/80 p-1.5 rounded-2xl border border-white/5 shadow-inner">
           {navLinks.map((link) => {
-            const isActive = pathname === link.href;
+            const isActive = pathname === link.href || (link.href !== '/dashboard' && pathname.startsWith(link.href));
             const Icon = link.icon;
             return (
               <Link
@@ -149,8 +153,15 @@ export default function Navbar() {
                 )}
               </div>
 
-              {/* User Avatar + Name */}
+              {/* User Avatar + Role Badge + Name */}
               <div className="flex items-center gap-2 pl-2 border-l border-white/10">
+                <span className={`text-[9px] uppercase font-mono px-2 py-0.5 rounded-full font-bold border ${
+                  user.role === 'manager'
+                    ? 'bg-purple-500/20 text-purple-300 border-purple-500/30'
+                    : 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30'
+                }`}>
+                  {user.role === 'manager' ? 'MANAGER' : 'STUDENT'}
+                </span>
                 <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-cyan-500 via-blue-600 to-purple-600 flex items-center justify-center font-bold text-xs text-white shadow-[0_0_12px_rgba(59,130,246,0.5)]">
                   {user.name?.slice(0, 2).toUpperCase() || 'CX'}
                 </div>
@@ -164,12 +175,18 @@ export default function Navbar() {
               </div>
             </>
           ) : (
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <Link
-                href="/dashboard"
-                className="btn-neon-cyan px-5 py-2 rounded-full text-xs font-bold text-white transition-all flex items-center gap-1.5"
+                href="/login"
+                className="px-4 py-1.5 rounded-full text-xs font-bold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition-all"
               >
-                Go to Dashboard →
+                Sign In
+              </Link>
+              <Link
+                href="/signup"
+                className="btn-neon-cyan px-4 py-1.5 rounded-full text-xs font-bold text-white transition-all flex items-center gap-1.5"
+              >
+                Sign Up →
               </Link>
             </div>
           )}
