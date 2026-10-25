@@ -43,6 +43,8 @@ model User {
   studyProgresses     StudyProgress[]
   feedbacks           Feedback[]
   loginLogs           LoginLog[]
+  activityEvents      ActivityEvent[]
+  assessmentAttempts  AssessmentAttempt[]
 }
 
 model Profile {
@@ -164,6 +166,9 @@ model Roadmap {
   totalStages     Int            @default(5)
   completedStages Int            @default(0)
   progressPercent Int            @default(0)
+  deadline        DateTime?
+  assignedBy      String?        @default("system") // manager | system
+  lastActivityAt  DateTime       @default(now())
   phases          RoadmapPhase[]
   generatedAt     DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
@@ -324,3 +329,41 @@ model LoginLog {
 
   @@index([userId])
 }
+
+model ActivityEvent {
+  id         String   @id @default(cuid())
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  eventType  String   // PAGE_VISIT | SEARCH_PERFORMED | ASSESSMENT_SUBMITTED | ROADMAP_MILESTONE_COMPLETED | RESOURCE_STUDIED | ROLE_EXPLORED
+  entityType String?  // page | explorer | assessment | roadmap | resource
+  entityId   String?
+  metadata   String?  // JSON string
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@index([eventType])
+  @@index([createdAt])
+}
+
+model AssessmentAttempt {
+  id                 String   @id @default(cuid())
+  userId             String
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assessmentType     String   @default("COMPREHENSIVE") // COMPREHENSIVE | TECH | APTITUDE | PROBLEM_SOLVING | MIND_GAMES
+  score              Float    // 0 to 100
+  passed             Boolean  @default(false)
+  timeTakenSec       Int      @default(300)
+  techScore          Float?
+  aptitudeScore      Float?
+  problemSolvingScore Float?
+  mindGamesScore     Float?
+  breakdownJson      String?  // JSON string
+  questionResponses  String?  // JSON string of array
+  allowRetake        Boolean  @default(true)
+  createdAt          DateTime @default(now())
+
+  @@index([userId])
+  @@index([assessmentType])
+  @@index([createdAt])
+}
+

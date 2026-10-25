@@ -24,8 +24,10 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const parseResult = loginSchema.safeParse(body);
     if (!parseResult.success) {
+      const err = parseResult.error as any;
+      const msg = err?.issues?.[0]?.message || err?.errors?.[0]?.message || 'Invalid input';
       return NextResponse.json(
-        { error: parseResult.error.errors[0]?.message || 'Invalid input' },
+        { error: msg },
         { status: 400 }
       );
     }

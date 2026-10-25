@@ -236,6 +236,36 @@ async function runTests() {
     assert(false, 'CSV export failed with exception', err.message);
   }
 
+  // 8. Test New Manager Endpoints (Role 403 vs 200)
+  console.log('\n--- Test Suite 6: Manager New Sub-Pages Endpoints & 403 Enforcement ---');
+  const managerEndpoints = [
+    '/api/manager/skill-graph',
+    '/api/manager/roadmap',
+    '/api/manager/assessments',
+    '/api/manager/explorer',
+    '/api/manager/alerts',
+  ];
+
+  for (const ep of managerEndpoints) {
+    try {
+      // 1. Verify 403 for Student
+      const userRes = await fetch(`${BASE_URL}${ep}`, {
+        headers: { Cookie: `${AUTH_COOKIE_NAME}=${studentToken}` },
+      });
+      assert(userRes.status === 403, `Student gets 403 on ${ep}`);
+
+      // 2. Verify 200 for Manager
+      const mgrRes = await fetch(`${BASE_URL}${ep}`, {
+        headers: { Cookie: `${AUTH_COOKIE_NAME}=${managerToken}` },
+      });
+      assert(mgrRes.status === 200, `Manager gets 200 on ${ep}`);
+      const data = await mgrRes.json();
+      assert(!!data, `Response for ${ep} returns valid JSON object`);
+    } catch (err: any) {
+      assert(false, `Test failed for ${ep}`, err.message);
+    }
+  }
+
   console.log(`\n========================================`);
   console.log(`Test Results: ${passed} Passed, ${failed} Failed`);
   console.log(`========================================\n`);

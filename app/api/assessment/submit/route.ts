@@ -154,6 +154,40 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    // Create AssessmentAttempt record
+    const overallAssessmentScore = Math.round((aptitudeScore + problemSolvingScore + mindGamesScore) / 3);
+    const techKeys = Object.keys(techInterestScores);
+    const avgTechScore = techKeys.length > 0 
+      ? Number((Object.values(techInterestScores) as any[]).reduce((a: number, b: any) => a + Number(b), 0)) / techKeys.length 
+      : 80;
+
+    await db.assessmentAttempt.create({
+      data: {
+        userId: user.id,
+        assessmentType: 'COMPREHENSIVE',
+        score: overallAssessmentScore,
+        passed: overallAssessmentScore >= 60,
+        timeTakenSec: 360,
+        techScore: avgTechScore,
+        aptitudeScore: Number(aptitudeScore),
+        problemSolvingScore: Number(problemSolvingScore),
+        mindGamesScore: Number(mindGamesScore),
+        breakdownJson: JSON.stringify({ techInterestScores, aptitudeScore, problemSolvingScore, mindGamesScore }),
+        questionResponses: JSON.stringify(rawResponses),
+        allowRetake: true,
+      },
+    });
+
+    await db.activityEvent.create({
+      data: {
+        userId: user.id,
+        eventType: 'ASSESSMENT_SUBMITTED',
+        entityType: 'assessment',
+        entityId: 'comprehensive',
+        metadata: JSON.stringify({ score: overallAssessmentScore, passed: overallAssessmentScore >= 60 }),
+      },
+    });
+
     // Unlock Career Analysis
     await db.profile.update({
       where: { userId: user.id },

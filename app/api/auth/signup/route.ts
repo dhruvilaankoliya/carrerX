@@ -37,8 +37,10 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const parseResult = signupSchema.safeParse(body);
     if (!parseResult.success) {
+      const err = parseResult.error as any;
+      const msg = err?.issues?.[0]?.message || err?.errors?.[0]?.message || 'Invalid input data';
       return NextResponse.json(
-        { error: parseResult.error.errors[0]?.message || 'Invalid input data' },
+        { error: msg },
         { status: 400 }
       );
     }

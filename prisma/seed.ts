@@ -584,6 +584,230 @@ Certifications: DeepLearning.AI Deep Learning Specialization, Stanford Online CS
     }
   }
 
+  // ─────────────────────────────────────────────────────────────
+  // 4. Seed Roadmaps for Demo Students
+  // ─────────────────────────────────────────────────────────────
+  console.log('🌱 Seeding Roadmaps for demo students...');
+  const studentUsers = await prisma.user.findMany({
+    where: { role: 'user' },
+    include: { profile: true, resumeData: true, roadmaps: true },
+  });
+
+  const now = Date.now();
+  for (let i = 0; i < studentUsers.length; i++) {
+    const s = studentUsers[i];
+    if (s.roadmaps.length === 0) {
+      const targetRole = s.profile?.targetCareerId || (i % 2 === 0 ? 'ml-engineer' : 'fullstack');
+      const studentProfileData: any = {
+        userId: s.id,
+        name: s.name,
+        college: s.profile?.college || 'University',
+        course: s.profile?.course || 'B.Tech',
+        branch: s.profile?.branch || 'Computer Science',
+        currentYear: s.profile?.currentYear || 3,
+        gradYear: s.profile?.gradYear || 2026,
+        cgpa: s.profile?.cgpa || 8.5,
+        programmingLanguages: s.profile ? JSON.parse(s.profile.programmingLanguages || '[]') : [],
+        technicalSkills: s.profile ? JSON.parse(s.profile.technicalSkills || '[]') : [],
+        extractedSkills: [],
+        extractedProjects: [],
+        extractedCertifications: [],
+        resumeInitialInterests: {},
+        assessmentScores: {
+          techInterest: {},
+          aptitude: 80,
+          problemSolving: 80,
+          mindGames: 80,
+        },
+        streakDays: s.profile?.streakDays || 1,
+      };
+
+      const phases = generatePersonalizedRoadmap(studentProfileData, targetRole);
+      
+      // Make student 2 stuck (last activity 9 days ago)
+      const isStuckUser = i === 2;
+      const lastActive = isStuckUser 
+        ? new Date(now - 9 * 24 * 60 * 60 * 1000) 
+        : new Date(now - (i + 1) * 6 * 60 * 60 * 1000);
+
+      // Inactive student for alert testing
+      if (isStuckUser) {
+        await prisma.user.update({
+          where: { id: s.id },
+          data: {
+            lastSeenAt: new Date(now - 10 * 24 * 60 * 60 * 1000),
+            isOnline: false,
+          },
+        });
+      }
+
+      const completedPhasesCount = isStuckUser ? 1 : Math.min(phases.length, i % 4);
+      const progressPercent = Math.round((completedPhasesCount / phases.length) * 100);
+
+      const rm = await prisma.roadmap.create({
+        data: {
+          userId: s.id,
+          targetCareerId: targetRole,
+          totalStages: phases.length,
+          completedStages: completedPhasesCount,
+          progressPercent,
+          assignedBy: i % 2 === 0 ? 'manager' : 'system',
+          deadline: new Date(now + (45 - i * 5) * 24 * 60 * 60 * 1000),
+          lastActivityAt: lastActive,
+        },
+      });
+
+      for (let pIdx = 0; pIdx < phases.length; pIdx++) {
+        const ph = phases[pIdx];
+        const status = pIdx < completedPhasesCount ? 'COMPLETED' : pIdx === completedPhasesCount ? 'IN_PROGRESS' : 'NOT_STARTED';
+        const phaseProgress = status === 'COMPLETED' ? 100 : status === 'IN_PROGRESS' ? 45 : 0;
+        await prisma.roadmapPhase.create({
+          data: {
+            roadmapId: rm.id,
+            phaseNumber: ph.phaseNumber,
+            title: ph.title,
+            subtitle: ph.subtitle,
+            duration: ph.duration,
+            status,
+            progress: phaseProgress,
+            topics: JSON.stringify(ph.topics),
+            deliverables: JSON.stringify(ph.deliverables),
+          },
+        });
+      }
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // 5. Seed AssessmentAttempts (with first vs latest & low scores)
+  // ─────────────────────────────────────────────────────────────
+  console.log('🌱 Seeding AssessmentAttempts...');
+  await prisma.assessmentAttempt.deleteMany({});
+
+  for (let i = 0; i < studentUsers.length; i++) {
+    const s = studentUsers[i];
+    // Attempt 1 (first attempt - earlier date)
+    const isLowScoreStudent = i === 3; // Rohit Verma has low score for alert test
+    const score1 = isLowScoreStudent ? 48 : 62 + (i % 5) * 5;
+    const passed1 = score1 >= 60;
+
+    await prisma.assessmentAttempt.create({
+      data: {
+        userId: s.id,
+        assessmentType: 'COMPREHENSIVE',
+        score: score1,
+        passed: passed1,
+        timeTakenSec: 420 - i * 15,
+        techScore: score1 + 5,
+        aptitudeScore: score1 - 3,
+        problemSolvingScore: score1 - 8,
+        mindGamesScore: score1 + 2,
+        breakdownJson: JSON.stringify({ tech: score1 + 5, aptitude: score1 - 3, problemSolving: score1 - 8 }),
+        questionResponses: JSON.stringify([
+          { questionId: 'apt_1', isCorrect: passed1, score: passed1 ? 1 : 0 },
+          { questionId: 'prob_1', isCorrect: false, score: 0 },
+          { questionId: 'mind_1', isCorrect: true, score: 1 },
+        ]),
+        allowRetake: true,
+        createdAt: new Date(now - (14 + i) * 24 * 60 * 60 * 1000),
+      },
+    });
+
+    // Attempt 2 (latest attempt showing improvement, except low scorer)
+    const score2 = isLowScoreStudent ? 54 : Math.min(98, score1 + 12 + (i % 4));
+    const passed2 = score2 >= 60;
+
+    await prisma.assessmentAttempt.create({
+      data: {
+        userId: s.id,
+        assessmentType: 'COMPREHENSIVE',
+        score: score2,
+        passed: passed2,
+        timeTakenSec: 360 - i * 10,
+        techScore: score2 + 4,
+        aptitudeScore: score2,
+        problemSolvingScore: score2 - 2,
+        mindGamesScore: score2 + 3,
+        breakdownJson: JSON.stringify({ tech: score2 + 4, aptitude: score2, problemSolving: score2 - 2 }),
+        questionResponses: JSON.stringify([
+          { questionId: 'apt_1', isCorrect: true, score: 1 },
+          { questionId: 'prob_1', isCorrect: passed2, score: passed2 ? 1 : 0 },
+          { questionId: 'mind_1', isCorrect: true, score: 1 },
+        ]),
+        allowRetake: isLowScoreStudent ? true : false,
+        createdAt: new Date(now - (2 + i) * 24 * 60 * 60 * 1000),
+      },
+    });
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // 6. Seed ActivityEvents for Explorer & Funnel Analytics
+  // ─────────────────────────────────────────────────────────────
+  console.log('🌱 Seeding ActivityEvents...');
+  await prisma.activityEvent.deleteMany({});
+
+  const sampleSearches = [
+    { query: 'Kubernetes', resultsCount: 4 },
+    { query: 'PyTorch', resultsCount: 6 },
+    { query: 'Docker', resultsCount: 5 },
+    { query: 'Next.js 14', resultsCount: 3 },
+    { query: 'Vector Databases / Pinecone', resultsCount: 3 },
+    { query: 'System Design', resultsCount: 5 },
+    { query: 'Quantum Computing Qiskit', resultsCount: 0 },
+    { query: 'Solidity Smart Contract Security', resultsCount: 0 },
+    { query: 'Unreal Engine 5 C++ Architecture', resultsCount: 0 },
+  ];
+
+  for (const s of studentUsers) {
+    // Page visits
+    await prisma.activityEvent.create({
+      data: {
+        userId: s.id,
+        eventType: 'PAGE_VISIT',
+        entityType: 'explorer',
+        entityId: 'career_explorer',
+        createdAt: new Date(now - Math.random() * 5 * 24 * 60 * 60 * 1000),
+      },
+    });
+
+    // Searches
+    const searchItem = sampleSearches[Math.floor(Math.random() * sampleSearches.length)];
+    await prisma.activityEvent.create({
+      data: {
+        userId: s.id,
+        eventType: 'SEARCH_PERFORMED',
+        entityType: 'explorer',
+        entityId: 'search_bar',
+        metadata: JSON.stringify({ query: searchItem.query, resultsCount: searchItem.resultsCount }),
+        createdAt: new Date(now - Math.random() * 4 * 24 * 60 * 60 * 1000),
+      },
+    });
+
+    // Resource opened
+    await prisma.activityEvent.create({
+      data: {
+        userId: s.id,
+        eventType: 'RESOURCE_OPENED',
+        entityType: 'resource',
+        entityId: 'res_k8s_1',
+        metadata: JSON.stringify({ title: 'Kubernetes The Hard Way', skillId: 'skill_k8s' }),
+        createdAt: new Date(now - Math.random() * 3 * 24 * 60 * 60 * 1000),
+      },
+    });
+
+    // Resource studied
+    await prisma.activityEvent.create({
+      data: {
+        userId: s.id,
+        eventType: 'RESOURCE_STUDIED',
+        entityType: 'resource',
+        entityId: 'res_k8s_1',
+        metadata: JSON.stringify({ title: 'Kubernetes The Hard Way', skillId: 'skill_k8s' }),
+        createdAt: new Date(now - Math.random() * 2 * 24 * 60 * 60 * 1000),
+      },
+    });
+  }
+
   console.log('✅ Full Seed completed successfully!');
 }
 

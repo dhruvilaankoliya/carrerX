@@ -49,7 +49,6 @@ export async function POST(
       });
       isStudied = false;
     } else {
-      // Toggle on / mark studied
       await db.studyProgress.create({
         data: {
           userId,
@@ -58,6 +57,16 @@ export async function POST(
         },
       });
       isStudied = true;
+
+      await db.activityEvent.create({
+        data: {
+          userId,
+          eventType: 'RESOURCE_STUDIED',
+          entityType: 'resource',
+          entityId: resourceId,
+          metadata: JSON.stringify({ title: resource.title, skillId: resource.skillId, type: resource.type }),
+        },
+      });
     }
 
     // Fetch updated total studied count for this resource

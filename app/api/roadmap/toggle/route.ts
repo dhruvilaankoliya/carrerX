@@ -37,6 +37,41 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    // Update parent roadmap lastActivityAt and progressPercent
+    const parentRoadmap = await db.roadmap.findUnique({
+      where: { id: phase.roadmapId },
+      include: { phases: true },
+    });
+
+    if (parentRoadmap) {
+      const allPhases = parentRoadmap.phases;
+      const completedCount = allPhases.filter((p) => (p.id === phaseId ? newStatus === 'COMPLETED' : p.status === 'COMPLETED')).length;
+      const totalProgress = Math.round(
+        allPhases.reduce((acc, p) => acc + (p.id === phaseId ? progress : p.progress), 0) / (allPhases.length || 1)
+      );
+
+      await db.roadmap.update({
+        where: { id: phase.roadmapId },
+        data: {
+          lastActivityAt: new Date(),
+          completedStages: completedCount,
+          progressPercent: totalProgress,
+        },
+      });
+
+      if (done) {
+        await db.activityEvent.create({
+          data: {
+            userId: session.user.id,
+            eventType: 'ROADMAP_MILESTONE_COMPLETED',
+            entityType: 'roadmap',
+            entityId: phase.id,
+            metadata: JSON.stringify({ phaseTitle: phase.title, deliverableIndex, progress }),
+          },
+        });
+      }
+    }
+
     return NextResponse.json({ success: true, progress, status: newStatus });
   } catch (error: any) {
     console.error('Roadmap toggle error:', error);

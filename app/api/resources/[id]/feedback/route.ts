@@ -28,8 +28,10 @@ export async function POST(
     const body = await req.json();
     const parseResult = feedbackSchema.safeParse(body);
     if (!parseResult.success) {
+      const err = parseResult.error as any;
+      const msg = err?.issues?.[0]?.message || err?.errors?.[0]?.message || 'Invalid feedback data';
       return NextResponse.json(
-        { error: parseResult.error.errors[0]?.message || 'Invalid feedback data' },
+        { error: msg },
         { status: 400 }
       );
     }

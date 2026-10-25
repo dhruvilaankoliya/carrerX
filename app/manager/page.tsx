@@ -22,6 +22,12 @@ import {
   Sparkles,
   UserCheck,
   TrendingUp,
+  Network,
+  Map,
+  FileCheck2,
+  Compass,
+  AlertTriangle,
+  ArrowRight,
 } from 'lucide-react';
 
 export default function ManagerDashboard() {
@@ -30,6 +36,9 @@ export default function ManagerDashboard() {
   // Stats state
   const [stats, setStats] = useState<any>(null);
   const [statsLoading, setStatsLoading] = useState(true);
+
+  // Alerts state
+  const [alerts, setAlerts] = useState<any>(null);
 
   // Users state
   const [users, setUsers] = useState<any[]>([]);
@@ -149,13 +158,27 @@ export default function ManagerDashboard() {
     }
   }, [feedbackSkillFilter, feedbackRatingFilter, feedbackSearch]);
 
+  // Load Cohort Alerts
+  const loadAlerts = useCallback(async () => {
+    try {
+      const res = await fetch('/api/manager/alerts');
+      if (res.ok) {
+        const data = await res.json();
+        setAlerts(data);
+      }
+    } catch (err) {
+      console.error('Error fetching manager alerts:', err);
+    }
+  }, []);
+
   // Initial load
   useEffect(() => {
     loadStats();
+    loadAlerts();
     loadUsers();
     loadResources();
     loadFeedback();
-  }, [loadStats, loadUsers, loadResources, loadFeedback]);
+  }, [loadStats, loadAlerts, loadUsers, loadResources, loadFeedback]);
 
   // Trigger users load on filter change
   useEffect(() => {
@@ -265,6 +288,73 @@ export default function ManagerDashboard() {
         </div>
       </div>
 
+      {/* ─── MANAGER SUB-VIEWS QUICK NAVIGATION ───────────────── */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <Link
+          href="/manager/skill-graph"
+          className="p-3.5 rounded-2xl bg-white/5 border border-white/10 hover:border-cyan-500/40 hover:bg-cyan-500/5 transition-all flex items-center justify-between group"
+        >
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-400 group-hover:scale-110 transition-transform">
+              <Network className="w-4 h-4" />
+            </div>
+            <div>
+              <div className="font-heading font-bold text-xs text-white group-hover:text-cyan-300">Skill Graph</div>
+              <div className="text-[10px] text-slate-400">Heatmap & Peer Benchmarking</div>
+            </div>
+          </div>
+          <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 group-hover:translate-x-0.5 transition-all" />
+        </Link>
+
+        <Link
+          href="/manager/roadmap"
+          className="p-3.5 rounded-2xl bg-white/5 border border-white/10 hover:border-emerald-500/40 hover:bg-emerald-500/5 transition-all flex items-center justify-between group"
+        >
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 group-hover:scale-110 transition-transform">
+              <Map className="w-4 h-4" />
+            </div>
+            <div>
+              <div className="font-heading font-bold text-xs text-white group-hover:text-emerald-300">Roadmap Velocity</div>
+              <div className="text-[10px] text-slate-400">Milestones & 7d Stalled Badges</div>
+            </div>
+          </div>
+          <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-emerald-400 group-hover:translate-x-0.5 transition-all" />
+        </Link>
+
+        <Link
+          href="/manager/assessments"
+          className="p-3.5 rounded-2xl bg-white/5 border border-white/10 hover:border-purple-500/40 hover:bg-purple-500/5 transition-all flex items-center justify-between group"
+        >
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 rounded-xl bg-purple-500/10 text-purple-400 group-hover:scale-110 transition-transform">
+              <FileCheck2 className="w-4 h-4" />
+            </div>
+            <div>
+              <div className="font-heading font-bold text-xs text-white group-hover:text-purple-300">Assessments</div>
+              <div className="text-[10px] text-slate-400">Attempts & Retake Control</div>
+            </div>
+          </div>
+          <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-purple-400 group-hover:translate-x-0.5 transition-all" />
+        </Link>
+
+        <Link
+          href="/manager/explorer"
+          className="p-3.5 rounded-2xl bg-white/5 border border-white/10 hover:border-amber-500/40 hover:bg-amber-500/5 transition-all flex items-center justify-between group"
+        >
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 rounded-xl bg-amber-500/10 text-amber-400 group-hover:scale-110 transition-transform">
+              <Compass className="w-4 h-4" />
+            </div>
+            <div>
+              <div className="font-heading font-bold text-xs text-white group-hover:text-amber-300">Explorer Telemetry</div>
+              <div className="text-[10px] text-slate-400">Search Volume & Funnel</div>
+            </div>
+          </div>
+          <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-amber-400 group-hover:translate-x-0.5 transition-all" />
+        </Link>
+      </div>
+
       {/* ─── SECTION A: OVERVIEW METRIC CARDS ───────────────────── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         {/* Total Users */}
@@ -354,6 +444,105 @@ export default function ManagerDashboard() {
           </p>
         </div>
       </div>
+
+      {/* ─── SECTION: HIGH PRIORITY COHORT ATTENTION ALERTS ─────── */}
+      {alerts && alerts.totalAlertsCount > 0 && (
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-rose-400">
+            <AlertTriangle className="w-4 h-4" />
+            <span>High-Priority Cohort Attention Alerts ({alerts.totalAlertsCount})</span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Inactive 7+ Days */}
+            <div className="p-4 rounded-2xl bg-rose-950/20 border border-rose-500/40 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="font-heading font-bold text-xs text-white flex items-center gap-1.5">
+                  <Clock className="w-3.5 h-3.5 text-rose-400" />
+                  Inactive Learners (7+ Days)
+                </span>
+                <span className="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 text-xs font-mono font-bold">
+                  {alerts.alerts.inactive.count}
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-400">
+                {alerts.alerts.inactive.count > 0
+                  ? `${alerts.alerts.inactive.items[0]?.name} and others haven't logged in over a week.`
+                  : 'All learners have been active recently.'}
+              </p>
+              {alerts.alerts.inactive.count > 0 && (
+                <div className="pt-2 border-t border-rose-500/20 flex items-center justify-between text-[11px]">
+                  <span className="text-slate-400 truncate max-w-[150px]">
+                    {alerts.alerts.inactive.items.map((i: any) => i.name).slice(0, 2).join(', ')}
+                  </span>
+                  <Link href="/manager/roadmap?filter=stuck" className="text-rose-300 hover:text-white font-bold flex items-center gap-1">
+                    <span>Inspect</span>
+                    <ArrowRight className="w-3 h-3" />
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            {/* Low Assessment Score (<60%) */}
+            <div className="p-4 rounded-2xl bg-amber-950/20 border border-amber-500/40 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="font-heading font-bold text-xs text-white flex items-center gap-1.5">
+                  <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
+                  Low Assessment Score (&lt;60%)
+                </span>
+                <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-xs font-mono font-bold">
+                  {alerts.alerts.lowScores.count}
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-400">
+                {alerts.alerts.lowScores.count > 0
+                  ? `${alerts.alerts.lowScores.items[0]?.userName} scored ${alerts.alerts.lowScores.items[0]?.score}% on diagnostic evaluation.`
+                  : 'All learners achieved passing diagnostic threshold.'}
+              </p>
+              {alerts.alerts.lowScores.count > 0 && (
+                <div className="pt-2 border-t border-amber-500/20 flex items-center justify-between text-[11px]">
+                  <span className="text-slate-400 truncate max-w-[150px]">
+                    {alerts.alerts.lowScores.items[0]?.userName} ({alerts.alerts.lowScores.items[0]?.score}%)
+                  </span>
+                  <Link href="/manager/assessments?passed=false" className="text-amber-300 hover:text-white font-bold flex items-center gap-1">
+                    <span>Manage Retakes</span>
+                    <ArrowRight className="w-3 h-3" />
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            {/* Behind-Schedule / Stuck Roadmaps */}
+            <div className="p-4 rounded-2xl bg-indigo-950/20 border border-indigo-500/40 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="font-heading font-bold text-xs text-white flex items-center gap-1.5">
+                  <Map className="w-3.5 h-3.5 text-indigo-400" />
+                  Stalled Roadmaps (7d+)
+                </span>
+                <span className="px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-mono font-bold">
+                  {alerts.alerts.stuckRoadmaps.count}
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-400">
+                {alerts.alerts.stuckRoadmaps.count > 0
+                  ? `${alerts.alerts.stuckRoadmaps.items[0]?.userName} has made 0 deliverable progress for over 7 days.`
+                  : 'All roadmap deliverable pipelines moving on schedule.'}
+              </p>
+              {alerts.alerts.stuckRoadmaps.count > 0 && (
+                <div className="pt-2 border-t border-indigo-500/20 flex items-center justify-between text-[11px]">
+                  <span className="text-slate-400 truncate max-w-[150px]">
+                    {alerts.alerts.stuckRoadmaps.items[0]?.userName} ({alerts.alerts.stuckRoadmaps.items[0]?.progressPercent}%)
+                  </span>
+                  <Link href="/manager/roadmap?filter=stuck" className="text-indigo-300 hover:text-white font-bold flex items-center gap-1">
+                    <span>View Roadmaps</span>
+                    <ArrowRight className="w-3 h-3" />
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ─── MAIN TABS NAVIGATION ───────────────────────────────── */}
       <div className="flex items-center gap-2 border-b border-white/10 pb-3">
@@ -600,7 +789,7 @@ export default function ManagerDashboard() {
             {pagination.totalPages > 1 && (
               <div className="flex items-center justify-between px-5 py-3.5 bg-[#070b14]/80 border-t border-white/10 text-xs">
                 <span className="text-slate-400 font-mono">
-                  Showing page {pagination.page} of {pagination.totalPages} ({pagination.total} total learners)
+                  Showing page {page} of {pagination.totalPages} ({pagination.total} total learners)
                 </span>
                 <div className="flex items-center gap-2">
                   <button
