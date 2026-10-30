@@ -15,8 +15,10 @@ interface ChannelMessage {
   createdAt: string;
 }
 
-const DATA_DIR = path.join(process.cwd(), 'data');
-const CHANNELS_FILE = path.join(DATA_DIR, 'channel_messages.json');
+const IS_VERCEL = !!process.env.VERCEL;
+const DATA_DIR = IS_VERCEL ? '/tmp' : path.join(process.cwd(), 'data');
+const CHANNELS_FILE = path.join(DATA_DIR, 'careerx_channels.json');
+const SEED_FILE = path.join(process.cwd(), 'data', 'channel_messages.json');
 
 const INITIAL_CHANNEL_MESSAGES: Record<string, ChannelMessage[]> = {
   'ml-engineering': [
@@ -85,19 +87,32 @@ const INITIAL_CHANNEL_MESSAGES: Record<string, ChannelMessage[]> = {
 };
 
 function ensureDataFile() {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-  }
-  if (!fs.existsSync(CHANNELS_FILE)) {
-    fs.writeFileSync(CHANNELS_FILE, JSON.stringify(INITIAL_CHANNEL_MESSAGES, null, 2), 'utf-8');
+  try {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+    if (!fs.existsSync(CHANNELS_FILE)) {
+      if (fs.existsSync(SEED_FILE)) {
+        try {
+          fs.copyFileSync(SEED_FILE, CHANNELS_FILE);
+          return;
+        } catch {}
+      }
+      fs.writeFileSync(CHANNELS_FILE, JSON.stringify(INITIAL_CHANNEL_MESSAGES, null, 2), 'utf-8');
+    }
+  } catch (e) {
+    console.error('ensureDataFile error:', e);
   }
 }
 
 function loadMessages(): Record<string, ChannelMessage[]> {
   try {
     ensureDataFile();
-    const raw = fs.readFileSync(CHANNELS_FILE, 'utf-8');
-    return JSON.parse(raw);
+    if (fs.existsSync(CHANNELS_FILE)) {
+      const raw = fs.readFileSync(CHANNELS_FILE, 'utf-8');
+      return JSON.parse(raw);
+    }
+    return INITIAL_CHANNEL_MESSAGES;
   } catch {
     return INITIAL_CHANNEL_MESSAGES;
   }

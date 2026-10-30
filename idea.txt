@@ -1,1 +1,0 @@
-add dropdown in registartion and section

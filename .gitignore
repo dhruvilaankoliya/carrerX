@@ -13,11 +13,11 @@ build/
 .next/
 out/
 
-# Database
-*.db
+# Database (keep seeded dev.db for zero-config serverless deployment)
 *.db-journal
 *.sqlite
-dev.db
+prisma/dev.db-journal
+!prisma/dev.db
 
 # Environment & secrets
 .env
@@ -26,10 +26,6 @@ dev.db
 .env.development.local
 .env.test.local
 .env.production.local
-
-# Vite cache
-.vite/
-vite.config.js.timestamp-*
 
 # Editor directories and files
 .idea/
@@ -47,6 +43,5 @@ Thumbs.db
 .AppleDouble
 .LSOverride
 
-# Nested cloned directory
-carrerX/
+# Typescript build info
 *.tsbuildinfo
