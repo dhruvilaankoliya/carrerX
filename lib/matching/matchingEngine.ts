@@ -127,7 +127,9 @@ export interface CandidateUser {
   showEmail?: boolean;
   showPhone?: boolean;
   allowConnectionRequests?: boolean;
+  connectionId?: string;
   connectionStatus?: 'none' | 'pending' | 'accepted' | 'declined';
+  isConnectionSender?: boolean;
   lastActiveAt?: string | Date;
 }
 
@@ -171,7 +173,9 @@ export interface MatchResult {
     experiencedIn: string[];
     summary: string;
   };
+  connectionId?: string;
   connectionStatus: 'none' | 'pending' | 'accepted' | 'declined';
+  isConnectionSender?: boolean;
   availableToHelp: boolean;
   studyBuddyEnabled: boolean;
   profileVisibility: string;
@@ -350,7 +354,9 @@ export function computeStudentMatch(
       experiencedIn: Array.from(new Set(matchedSkills.concat(verifiedEvidenceSkills))),
       summary: summaryText,
     },
+    connectionId: candidate.connectionId,
     connectionStatus: candidate.connectionStatus || 'none',
+    isConnectionSender: candidate.isConnectionSender,
     availableToHelp: candidate.availableToHelp,
     studyBuddyEnabled: candidate.studyBuddyEnabled,
     profileVisibility: candidate.profileVisibility || 'public',

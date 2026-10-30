@@ -97,10 +97,11 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    const connectionMap = new Map<string, { status: 'pending' | 'accepted' | 'declined'; isSender: boolean }>();
+    const connectionMap = new Map<string, { id: string; status: 'pending' | 'accepted' | 'declined'; isSender: boolean }>();
     existingConnections.forEach((conn: any) => {
       const partnerId = conn.senderId === user.id ? conn.receiverId : conn.senderId;
       connectionMap.set(partnerId, {
+        id: conn.id,
         status: conn.status as any,
         isSender: conn.senderId === user.id,
       });
@@ -188,7 +189,9 @@ export async function GET(req: NextRequest) {
         showEmail: p.showEmail ?? false,
         showPhone: p.showPhone ?? false,
         allowConnectionRequests: p.allowConnectionRequests ?? true,
+        connectionId: connInfo ? connInfo.id : undefined,
         connectionStatus: connInfo ? connInfo.status : 'none',
+        isConnectionSender: connInfo ? connInfo.isSender : false,
         lastActiveAt: p.lastActiveAt || p.updatedAt,
       });
     }

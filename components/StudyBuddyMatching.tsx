@@ -62,7 +62,9 @@ export interface MatchResultItem {
     experiencedIn: string[];
     summary: string;
   };
+  connectionId?: string;
   connectionStatus: 'none' | 'pending' | 'accepted' | 'declined';
+  isConnectionSender?: boolean;
   availableToHelp: boolean;
   studyBuddyEnabled: boolean;
   profileVisibility: string;
@@ -205,7 +207,7 @@ export default function StudyBuddyMatching({
         setMatches((prev) =>
           prev.map((m) =>
             m.userId === targetUserId
-              ? { ...m, connectionStatus: data.status || 'pending' }
+              ? { ...m, connectionStatus: data.status || 'pending', isConnectionSender: true }
               : m
           )
         );
@@ -214,6 +216,45 @@ export default function StudyBuddyMatching({
       }
     } catch {
       alert('Network error sending connection request');
+    }
+  };
+
+  const handleRespondConnection = async (
+    targetUserId: string,
+    action: 'accept' | 'decline',
+    studentName: string,
+    connectionId?: string
+  ) => {
+    try {
+      const res = await fetch('/api/connections/respond', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          connectionId,
+          targetUserId,
+          action,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setConnectToast({
+          id: targetUserId,
+          message: action === 'accept' ? `🎉 You and ${studentName} are now connected!` : 'Connection request declined.',
+        });
+        setTimeout(() => setConnectToast(null), 3500);
+
+        setMatches((prev) =>
+          prev.map((m) =>
+            m.userId === targetUserId
+              ? { ...m, connectionStatus: action === 'accept' ? 'accepted' : 'declined' }
+              : m
+          )
+        );
+      } else {
+        alert(data.error || 'Failed to respond to request');
+      }
+    } catch {
+      alert('Network error responding to connection request');
     }
   };
 
@@ -467,7 +508,81 @@ export default function StudyBuddyMatching({
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="space-y-6">
+          {/* Incoming Connection Requests Banner if any pending requests exist for user */}
+          {matches.some((cand) => cand.connectionStatus === 'pending' && !cand.isConnectionSender) && (
+            <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-emerald-950/80 via-[#071d20]/90 to-[#070b14] border border-emerald-500/40 shadow-lg shadow-emerald-500/10 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
+                    <UserPlus className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h4 className="font-heading font-bold text-sm text-white flex items-center gap-2">
+                      Incoming Study Connection Request!
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-mono font-bold animate-pulse">
+                        Action Required
+                      </span>
+                    </h4>
+                    <p className="text-xs text-slate-300">
+                      Peers want to connect and study alongside you. Accept to start real-time messaging!
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                {matches
+                  .filter((cand) => cand.connectionStatus === 'pending' && !cand.isConnectionSender)
+                  .map((requester) => (
+                    <div
+                      key={`req_${requester.userId}`}
+                      className="p-3 rounded-xl bg-[#070b14]/90 border border-emerald-500/30 flex items-center justify-between gap-3"
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        {requester.profilePhoto ? (
+                          <img
+                            src={requester.profilePhoto}
+                            alt={requester.name}
+                            className="w-10 h-10 rounded-xl object-cover border border-emerald-500/40 flex-shrink-0"
+                          />
+                        ) : (
+                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-700 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
+                            {requester.name.substring(0, 2).toUpperCase()}
+                          </div>
+                        )}
+                        <div className="min-w-0">
+                          <h5 className="font-heading font-bold text-xs text-white truncate">{requester.name}</h5>
+                          <p className="text-[10px] text-slate-400 truncate">{requester.college}</p>
+                          <span className="text-[9px] font-mono text-emerald-300 font-semibold">
+                            {requester.careerGoal}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-1.5 flex-shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => handleRespondConnection(requester.userId, 'accept', requester.name, requester.connectionId)}
+                          className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-xs shadow-md shadow-emerald-500/20 hover:scale-105 transition-all flex items-center gap-1"
+                        >
+                          <CheckCircle2 className="w-3.5 h-3.5" /> Accept
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleRespondConnection(requester.userId, 'decline', requester.name, requester.connectionId)}
+                          className="px-2 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-400 hover:text-rose-400 text-xs font-semibold transition-colors"
+                        >
+                          Decline
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {matches.map((cand) => {
             const isExpanded = !!expandedCards[cand.userId];
             const isWhyExpanded = !!expandedWhyCards[cand.userId];
@@ -506,9 +621,14 @@ export default function StudyBuddyMatching({
                       </div>
 
                       <div>
-                        <h4 className="font-heading font-bold text-sm text-white hover:text-cyan-300 transition-colors">
-                          {cand.name}
-                        </h4>
+                        <div className="flex items-center gap-1.5">
+                          <h4 className="font-heading font-bold text-sm text-white hover:text-cyan-300 transition-colors">
+                            {cand.name}
+                          </h4>
+                          {isConnected && (
+                            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" title="Connected Buddy" />
+                          )}
+                        </div>
                         <p className="text-[11px] text-slate-400 flex items-center gap-1">
                           <GraduationCap className="w-3 h-3 text-cyan-400 flex-shrink-0" />
                           <span>
@@ -523,9 +643,19 @@ export default function StudyBuddyMatching({
 
                     {/* Match Score Badge & Role Category */}
                     <div className="flex flex-col items-end gap-1">
-                      <span className="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 text-cyan-300 font-mono text-xs font-bold shadow-sm shadow-cyan-500/10">
-                        {cand.matchPercentage}% Match
-                      </span>
+                      {isConnected ? (
+                        <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-mono text-[10px] font-bold flex items-center gap-1">
+                          <CheckCircle2 className="w-3 h-3 text-emerald-400" /> Connected
+                        </span>
+                      ) : isPending && !cand.isConnectionSender ? (
+                        <span className="px-2 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 font-mono text-[10px] font-bold flex items-center gap-1 animate-pulse">
+                          <Clock className="w-3 h-3 text-amber-400" /> Incoming Req
+                        </span>
+                      ) : (
+                        <span className="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 text-cyan-300 font-mono text-xs font-bold shadow-sm shadow-cyan-500/10">
+                          {cand.matchPercentage}% Match
+                        </span>
+                      )}
                       <span
                         className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase ${
                           cand.roleCategory === 'Experienced Learner'
@@ -714,13 +844,33 @@ export default function StudyBuddyMatching({
                       <MessageSquare className="w-3.5 h-3.5" /> Message
                     </button>
                   ) : isPending ? (
-                    <button
-                      type="button"
-                      disabled
-                      className="flex-1 px-3 py-2 rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 text-xs font-bold flex items-center justify-center gap-1 cursor-default"
-                    >
-                      <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400" /> Request Sent ✓
-                    </button>
+                    cand.isConnectionSender ? (
+                      <button
+                        type="button"
+                        disabled
+                        className="flex-1 px-3 py-2 rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 text-xs font-bold flex items-center justify-center gap-1 cursor-default"
+                      >
+                        <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400" /> Request Sent ✓
+                      </button>
+                    ) : (
+                      <div className="flex-1 flex items-center gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => handleRespondConnection(cand.userId, 'accept', cand.name, cand.connectionId)}
+                          className="flex-1 px-3 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-xs flex items-center justify-center gap-1 shadow-md shadow-emerald-500/30 hover:scale-[1.02] transition-all"
+                        >
+                          <CheckCircle2 className="w-3.5 h-3.5" /> Accept Request
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleRespondConnection(cand.userId, 'decline', cand.name, cand.connectionId)}
+                          className="px-2.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-400 hover:text-rose-400 text-xs font-semibold transition-colors"
+                          title="Decline"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    )
                   ) : (
                     <button
                       type="button"
@@ -742,6 +892,7 @@ export default function StudyBuddyMatching({
               </div>
             );
           })}
+          </div>
         </div>
       )}
 

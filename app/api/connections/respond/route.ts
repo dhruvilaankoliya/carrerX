@@ -11,23 +11,37 @@ export async function POST(req: NextRequest) {
 
     const { user } = session;
     const body = await req.json();
-    const { connectionId, action } = body; // action: 'accept' | 'decline'
-
-    if (!connectionId) {
-      return NextResponse.json({ error: 'connectionId is required' }, { status: 400 });
-    }
+    const { connectionId, targetUserId, senderId, partnerId, action } = body; // action: 'accept' | 'decline'
 
     if (!action || !['accept', 'decline'].includes(action)) {
       return NextResponse.json({ error: 'Valid action ("accept" or "decline") is required' }, { status: 400 });
     }
 
-    const connection = await db.connection.findUnique({
-      where: { id: connectionId },
-      include: {
-        sender: { select: { id: true, name: true } },
-        receiver: { select: { id: true, name: true } },
-      },
-    });
+    let connection = null;
+    if (connectionId) {
+      connection = await db.connection.findUnique({
+        where: { id: connectionId },
+        include: {
+          sender: { select: { id: true, name: true } },
+          receiver: { select: { id: true, name: true } },
+        },
+      });
+    }
+
+    if (!connection && (targetUserId || senderId || partnerId)) {
+      const otherId = targetUserId || senderId || partnerId;
+      connection = await db.connection.findFirst({
+        where: {
+          senderId: otherId,
+          receiverId: user.id,
+          status: 'pending',
+        },
+        include: {
+          sender: { select: { id: true, name: true } },
+          receiver: { select: { id: true, name: true } },
+        },
+      });
+    }
 
     if (!connection) {
       return NextResponse.json({ error: 'Connection request not found' }, { status: 404 });

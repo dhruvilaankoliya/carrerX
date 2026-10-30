@@ -61,6 +61,9 @@ export async function GET(req: NextRequest) {
       const isSender = c.senderId === user.id;
       const partner = isSender ? c.receiver : c.sender;
 
+      // Ensure partner is never the current user
+      if (!partner || partner.id === user.id) continue;
+
       const formatted = {
         id: c.id,
         partnerId: partner.id,
@@ -90,6 +93,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({
       success: true,
+      currentUserId: user.id,
       connections: accepted,
       incomingRequests: incomingPending,
       outgoingRequests: outgoingPending,

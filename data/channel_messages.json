@@ -1,0 +1,65 @@
+{
+  "ml-engineering": [
+    {
+      "id": "msg_seed_1",
+      "channelId": "ml-engineering",
+      "senderId": "seed_aarav",
+      "senderName": "Aarav Sharma",
+      "senderCollege": "IIT Bombay",
+      "senderRole": "ML Infrastructure",
+      "senderPhoto": null,
+      "text": "Welcome to the ML Engineering study channel! Discussing model serving with Triton and Docker containerization.",
+      "createdAt": "2026-10-30T04:19:46.398Z"
+    },
+    {
+      "id": "msg_seed_2",
+      "channelId": "ml-engineering",
+      "senderId": "seed_dhruvila",
+      "senderName": "Dhruvila",
+      "senderCollege": "Dharmsinh Desai University",
+      "senderRole": "ML Engineer",
+      "senderPhoto": null,
+      "text": "Hey everyone! Currently optimizing Kubernetes deployment manifests for ML inference pipelines. Anyone working on this?",
+      "createdAt": "2026-10-30T05:49:46.398Z"
+    }
+  ],
+  "kubernetes-devops": [
+    {
+      "id": "msg_seed_3",
+      "channelId": "kubernetes-devops",
+      "senderId": "seed_aarav",
+      "senderName": "Aarav Sharma",
+      "senderCollege": "IIT Bombay",
+      "senderRole": "Cloud DevOps",
+      "senderPhoto": null,
+      "text": "Tip for Kubernetes cluster setup: verify your ingress controller and cert-manager configuration before scaling nodes.",
+      "createdAt": "2026-10-30T04:19:46.398Z"
+    }
+  ],
+  "fullstack-architect": [
+    {
+      "id": "msg_seed_4",
+      "channelId": "fullstack-architect",
+      "senderId": "seed_neha",
+      "senderName": "Neha Patel",
+      "senderCollege": "BITS Pilani",
+      "senderRole": "Full Stack Architect",
+      "senderPhoto": null,
+      "text": "Check out the Next.js App Router server actions pattern for low-latency database queries with Prisma.",
+      "createdAt": "2026-10-30T04:49:46.398Z"
+    }
+  ],
+  "interview-prep": [
+    {
+      "id": "msg_seed_5",
+      "channelId": "interview-prep",
+      "senderId": "seed_rohan",
+      "senderName": "Rohan Verma",
+      "senderCollege": "Delhi Technological University",
+      "senderRole": "Data Scientist",
+      "senderPhoto": null,
+      "text": "Daily DSA practice: Two Pointers and Sliding Window patterns are key for FAANG ML/backend screening rounds.",
+      "createdAt": "2026-10-30T03:49:46.398Z"
+    }
+  ]
+}

@@ -3,19 +3,67 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Sparkles, ArrowRight, Lock, CheckCircle2, Bot, Compass, Network, Map, FileText, Zap, Trophy, ShieldAlert } from 'lucide-react';
+import { Sparkles, ArrowRight, Lock, CheckCircle2, Bot, Compass, Network, Map, FileText, Zap, Trophy, ShieldAlert, Users, UserPlus, Check, MessageSquare } from 'lucide-react';
 import ReadinessGauge, { ScoreBreakdownBar } from '@/components/ReadinessGauge';
 import RadarChart from '@/components/RadarChart';
+import StudyBuddyChatModal from '@/components/StudyBuddyChatModal';
 import { CAREER_TAXONOMY } from '@/lib/taxonomy/careerTaxonomy';
 
 export default function DashboardPage() {
   const router = useRouter();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [incomingRequests, setIncomingRequests] = useState<any[]>([]);
+  const [connections, setConnections] = useState<any[]>([]);
+  const [chatTarget, setChatTarget] = useState<any>(null);
 
   useEffect(() => {
     fetchDashboardData();
+    fetchConnections();
+    const timer = setInterval(fetchConnections, 5000);
+    return () => clearInterval(timer);
   }, []);
+
+  const fetchConnections = async () => {
+    try {
+      const res = await fetch('/api/connections');
+      if (res.ok) {
+        const json = await res.json();
+        setIncomingRequests(json.incomingRequests || []);
+        setConnections(json.connections || []);
+      }
+    } catch {}
+  };
+
+  const handleAcceptConnection = async (connectionId: string) => {
+    try {
+      const res = await fetch('/api/connections/respond', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ connectionId, action: 'accept' }),
+      });
+      if (res.ok) {
+        await fetchConnections();
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleDeclineConnection = async (connectionId: string) => {
+    try {
+      const res = await fetch('/api/connections/respond', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ connectionId, action: 'decline' }),
+      });
+      if (res.ok) {
+        await fetchConnections();
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const fetchDashboardData = async () => {
     try {
@@ -113,6 +161,153 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* ─── Incoming Connection Requests Banner ─────────────── */}
+      {incomingRequests.length > 0 && (
+        <div className="glass-panel p-5 sm:p-6 bg-gradient-to-r from-emerald-950/80 via-[#071d20]/90 to-[#070b14] border border-emerald-500/40 rounded-2xl shadow-[0_0_25px_rgba(16,185,129,0.15)] space-y-4">
+          <div className="flex items-center justify-between border-b border-emerald-500/20 pb-3">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
+                <UserPlus className="w-4 h-4" />
+              </div>
+              <div>
+                <h3 className="font-heading font-bold text-sm text-white flex items-center gap-2">
+                  Study Connection Request ({incomingRequests.length})
+                  <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-mono text-[10px] font-bold animate-pulse">
+                    Action Required
+                  </span>
+                </h3>
+                <p className="text-xs text-slate-300">
+                  Peers want to connect, share resources, and study alongside you!
+                </p>
+              </div>
+            </div>
+            <Link
+              href="/resume"
+              className="text-xs text-cyan-400 hover:text-cyan-300 font-semibold"
+            >
+              View in Study Matching →
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {incomingRequests.map((req) => (
+              <div
+                key={req.id}
+                className="p-4 rounded-xl bg-[#070b14]/90 border border-white/10 flex items-center justify-between gap-3 shadow-md"
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-600 to-blue-700 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
+                    {req.partnerName?.slice(0, 2).toUpperCase() || 'CX'}
+                  </div>
+                  <div className="min-w-0">
+                    <h4 className="font-heading font-bold text-xs text-white truncate">{req.partnerName}</h4>
+                    <p className="text-[11px] text-slate-400 truncate">{req.partnerCollege}</p>
+                    <p className="text-[10px] text-cyan-300 font-mono truncate">{req.partnerRole}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-1.5 flex-shrink-0">
+                  <button
+                    onClick={() => handleAcceptConnection(req.id)}
+                    className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-xs shadow-md shadow-emerald-500/20 flex items-center gap-1 transition-all"
+                  >
+                    <Check className="w-3.5 h-3.5" /> Accept
+                  </button>
+                  <button
+                    onClick={() => handleDeclineConnection(req.id)}
+                    className="px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-400 hover:text-rose-400 font-semibold text-xs transition-colors"
+                  >
+                    Decline
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ─── Connected Friends / Study Buddies Widget ─────────────── */}
+      {connections.length > 0 && (
+        <div className="glass-panel p-5 sm:p-6 bg-gradient-to-r from-emerald-950/40 via-[#0a1626]/80 to-[#070b14] border border-emerald-500/30 rounded-2xl shadow-[0_0_20px_rgba(16,185,129,0.1)] space-y-4">
+          <div className="flex items-center justify-between border-b border-emerald-500/20 pb-3">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
+                <Users className="w-4 h-4" />
+              </div>
+              <div>
+                <h3 className="font-heading font-bold text-sm text-white flex items-center gap-2">
+                  Connected Study Buddies ({connections.length})
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                </h3>
+                <p className="text-xs text-slate-300">
+                  Your active study network. Peer-review code, collaborate on roadmap projects, and chat live.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <Link
+                href="/network"
+                className="px-3 py-1 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 font-bold text-xs flex items-center gap-1 transition-all"
+              >
+                Open Channels Hub →
+              </Link>
+              <Link
+                href="/resume"
+                className="text-xs text-slate-400 hover:text-slate-300 font-semibold"
+              >
+                Find Peers
+              </Link>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            {connections.map((conn) => (
+              <div
+                key={conn.id}
+                className="p-4 rounded-xl bg-[#070b14]/90 border border-emerald-500/20 hover:border-emerald-500/40 flex items-center justify-between gap-3 shadow-md transition-all group"
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  {conn.partnerPhoto ? (
+                    <img
+                      src={conn.partnerPhoto}
+                      alt={conn.partnerName}
+                      className="w-10 h-10 rounded-xl object-cover border border-emerald-500/40 flex-shrink-0"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-700 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
+                      {conn.partnerName?.slice(0, 2).toUpperCase() || 'CX'}
+                    </div>
+                  )}
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1.5">
+                      <h4 className="font-heading font-bold text-xs text-white truncate">{conn.partnerName}</h4>
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />
+                    </div>
+                    <p className="text-[11px] text-slate-400 truncate">{conn.partnerCollege}</p>
+                    <p className="text-[10px] text-emerald-300 font-mono truncate">{conn.partnerRole || conn.partnerCourse || 'Study Buddy'}</p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setChatTarget({
+                      id: conn.partnerId,
+                      name: conn.partnerName,
+                      photo: conn.partnerPhoto,
+                      college: conn.partnerCollege,
+                    })
+                  }
+                  className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-xs shadow-md shadow-emerald-500/20 flex items-center gap-1.5 transition-all flex-shrink-0 group-hover:scale-105"
+                >
+                  <MessageSquare className="w-3.5 h-3.5" /> Chat
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* ─── 2. Locked State Warning if Incomplete ────────────── */}
       {!isUnlocked ? (
@@ -275,6 +470,16 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
+
+      {/* Peer Chat Modal */}
+      <StudyBuddyChatModal
+        isOpen={!!chatTarget}
+        onClose={() => setChatTarget(null)}
+        targetUserId={chatTarget?.id || ''}
+        targetUserName={chatTarget?.name || ''}
+        targetUserPhoto={chatTarget?.photo}
+        targetUserCollege={chatTarget?.college}
+      />
     </div>
   );
 }

@@ -51,6 +51,20 @@ export async function GET(req: NextRequest) {
           { senderId: partnerId, receiverId: user.id },
         ],
       },
+      include: {
+        sender: {
+          select: {
+            id: true,
+            name: true,
+            profile: {
+              select: {
+                college: true,
+                profilePhoto: true,
+              },
+            },
+          },
+        },
+      },
       orderBy: { createdAt: 'asc' },
     });
 
@@ -84,6 +98,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({
       success: true,
+      currentUserId: user.id,
       connectionId: activeConnection.id,
       partner: {
         id: partnerUser?.id,
@@ -96,6 +111,9 @@ export async function GET(req: NextRequest) {
         id: m.id,
         senderId: m.senderId,
         receiverId: m.receiverId,
+        senderName: m.sender?.name,
+        senderCollege: m.sender?.profile?.college,
+        senderPhoto: m.sender?.profile?.profilePhoto,
         body: m.body,
         createdAt: m.createdAt,
         isSelf: m.senderId === user.id,

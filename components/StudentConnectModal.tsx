@@ -145,6 +145,15 @@ export default function StudentConnectModal({
       if (res.ok) {
         const data = await res.json();
         setStudents(data.students || []);
+        if (data.users) {
+          const statusMap: Record<string, 'none' | 'pending' | 'connected'> = {};
+          data.users.forEach((u: any) => {
+            if (u.status && u.status !== 'none') {
+              statusMap[u.id] = u.status;
+            }
+          });
+          setConnectionStatuses((prev) => ({ ...prev, ...statusMap }));
+        }
       }
     } catch (err) {
       console.error(err);

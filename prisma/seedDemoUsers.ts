@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 export async function seedDemoUsers(prisma: PrismaClient) {
   console.log('🌱 Seeding Demo Students & Study Partners...');
 
-  const passwordHash = await bcrypt.hash('CareerXDemo@2026', 10);
+  const passwordHash = await bcrypt.hash('CareerX@2026', 10);
 
   // Demo users dataset
   const demoUsers = [
